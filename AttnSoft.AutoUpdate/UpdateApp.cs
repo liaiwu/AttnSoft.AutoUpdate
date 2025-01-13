@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 
 namespace AttnSoft.AutoUpdate
 {
-    //自动更新核心类
+    /// <summary>
+    /// 自动更新核心类
+    /// </summary>
     public class UpdateApp : ApplicationBuilder<UpdateContext>
     {
         /// <summary>
