@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFrameworks>net6.0-windows</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
+		<LangVersion>default</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="Shared\**" />
+		<EmbeddedResource Remove="Shared\**" />
+		<None Remove="Shared\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Upgrade.exe" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Upgrade.exe">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\AttnSoft.AutoUpdate\AttnSoft.AutoUpdate.csproj" />
+	</ItemGroup>
+
+
+</Project>
