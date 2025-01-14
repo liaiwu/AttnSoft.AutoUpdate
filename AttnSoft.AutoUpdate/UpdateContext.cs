@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace AttnSoft.AutoUpdate
 {
@@ -31,7 +32,7 @@ namespace AttnSoft.AutoUpdate
         //触发更新异常事件
         public Action<Exception>? OnUpdateException;
 
-        public Func<UpdateContext, List<VersionInfo>>? OnGetUpdateVersionInfo;
+        public Func<UpdateContext, Task<List<VersionInfo>?>> OnGetUpdateVersionInfo;
 
         public IServiceCollection Services { get; } = new ServiceCollection();
         public IServiceProvider CreateServiceProvider()
@@ -58,11 +59,11 @@ namespace AttnSoft.AutoUpdate
         /// </summary>
         public string UpgradName { get; set; } = "Upgrade";
 
-        string _startAppCmd;
+        string? _startAppCmd;
         /// <summary>
         /// The name of the main application, without .exe.
         /// </summary>
-        public string StartAppCmd
+        public string? StartAppCmd
         {
             get
             {
@@ -81,7 +82,7 @@ namespace AttnSoft.AutoUpdate
         /// </summary>
         public bool IsMainUpdate { get; set; }
 
-        Version? clientVer;
+        Version clientVer;
         public Version ClientVersion
         {
             get
@@ -131,24 +132,24 @@ namespace AttnSoft.AutoUpdate
             }
             set { _appPath = value; }
         }
-        public string BackupPath { get; set; }
-        public string PatchPath { get; set; }
+        public string? BackupPath { get; set; }
+        public string? PatchPath { get; set; }
         /// <summary>
         /// Download file temporary storage path (for update file logic).
         /// </summary>
-        public string TempPath { get; set; }
+        public string? TempPath { get; set; }
 
         /// <summary>
         /// The fnull name of the compressed package file.
         /// </summary>
-        public string ZipFileName { get; set; }
+        public string? ZipFileName { get; set; }
 
         /// <summary>
         /// API address for reporting update status.
         /// </summary>
-        public string ReportUrl { get; set; }
+        public string? ReportUrl { get; set; }
 
-        public string AppSecretKey { get; set; }
+        public string? AppSecretKey { get; set; }
 
     }
 }

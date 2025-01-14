@@ -9,6 +9,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Common\HttpService\**" />
+	  <EmbeddedResource Remove="Common\HttpService\**" />
+	  <None Remove="Common\HttpService\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Remove="Application\Service\ApplicationServiceCollection.cs" />
 	  <Compile Remove="Common\HashAlgorithms\Md5HashAlgorithm.cs" />
 	  <Compile Remove="Common\HashAlgorithms\Sha1HashAlgorithm.cs" />

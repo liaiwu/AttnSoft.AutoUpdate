@@ -18,12 +18,11 @@ public class CheckUpdateMiddleware : ICheckUpdate
         List<VersionInfo>? verInfos;
         if (context.OnGetUpdateVersionInfo != null)
         {
-            verInfos = context.OnGetUpdateVersionInfo.Invoke(context);
+            verInfos =await context.OnGetUpdateVersionInfo.Invoke(context);
         }
         else
         {
-            context.UseOssGetVersionInfo();
-            verInfos = context.OnGetUpdateVersionInfo?.Invoke(context);
+            verInfos = await UpdateContextExtensions.GetVersionInfoFromOss(context); 
         }
         if (verInfos == null)
         {
