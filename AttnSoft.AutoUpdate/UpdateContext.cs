@@ -1,9 +1,12 @@
 ﻿using AttnSoft.AutoUpdate.Middlewares;
+using GeneralUpdate.Common.JsonContext;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text.Json;
 
 namespace AttnSoft.AutoUpdate
 {
@@ -28,14 +31,16 @@ namespace AttnSoft.AutoUpdate
         //触发更新异常事件
         public Action<Exception>? OnUpdateException;
 
-        public IServiceCollection Services { get; }=new ServiceCollection();
+        public Func<UpdateContext, List<VersionInfo>>? OnGetUpdateVersionInfo;
+
+        public IServiceCollection Services { get; } = new ServiceCollection();
         public IServiceProvider CreateServiceProvider()
         {
-            return  Services.BuildServiceProvider();
+            return Services.BuildServiceProvider();
         }
         public UpdateContext()
         {
-            Services.AddSingleton<ICheckUpdate, CheckUpdateUseOSSMiddleware>();
+            Services.AddSingleton<ICheckUpdate, CheckUpdateMiddleware>();
             Services.AddSingleton<IBackup, BackupMiddleware>();
             Services.AddSingleton<IDownload, DownloadMiddleware>();
             Services.AddSingleton<IHashCheck, HashCheckMiddleware>();
@@ -51,7 +56,7 @@ namespace AttnSoft.AutoUpdate
         /// <summary>
         /// Need to start the name of the app.
         /// </summary>
-        public string UpgradName { get; set; } = "Upgrad";
+        public string UpgradName { get; set; } = "Upgrade";
 
         string _startAppCmd;
         /// <summary>
@@ -76,30 +81,37 @@ namespace AttnSoft.AutoUpdate
         /// </summary>
         public bool IsMainUpdate { get; set; }
 
-        string _clientVersion;
-
-        /// <summary>
-        /// Client current version.
-        /// </summary>
-        public string ClientVersion 
-        { 
-            get { return _clientVersion; } 
-            set { _clientVersion = value; clientVer = null; } }
         Version? clientVer;
-        public Version GetClientVersion()
+        public Version ClientVersion
         {
-            if (clientVer == null)
+            get
             {
-                if (!string.IsNullOrEmpty(ClientVersion))
+                if (clientVer == null)
                 {
-                    clientVer = new Version(ClientVersion);
+                    var filename = "Version.json";
+                    filename = Path.Combine(AppPath, filename);
+                    string jsonString = string.Empty;
+                    if (File.Exists(filename))
+                    {
+                        jsonString = File.ReadAllText(filename);
+                        var localVer = JsonSerializer.Deserialize<VersionInfo>(jsonString, VersionInfoJsonContext.Default.VersionInfo);
+                        if (localVer != null)
+                        {
+                            clientVer = localVer.Version;
+                        }
+                    }
+                    else
+                    {
+                        clientVer = Assembly.GetEntryAssembly().GetName().Version;
+                    }
+
                 }
-                else
-                {
-                    clientVer = Assembly.GetEntryAssembly().GetName().Version;
-                }
+                return clientVer;
             }
-            return clientVer;
+            set
+            {
+                clientVer = value;
+            }
         }
         /// <summary>
         /// The main program update version.

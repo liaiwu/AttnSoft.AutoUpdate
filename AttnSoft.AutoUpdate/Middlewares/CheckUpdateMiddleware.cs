@@ -1,5 +1,5 @@
-﻿using AttnSoft.AutoUpdate.Common;
-using GeneralUpdate.Common.Shared.Object;
+﻿using GeneralUpdate.Common.Shared.Object;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,13 +11,26 @@ public interface ICheckUpdate:IApplicationMiddleware<UpdateContext> { }
 /// <summary>
 /// 检查更新中间件
 /// </summary>
-public class CheckUpdateUseOSSMiddleware : ICheckUpdate
+public class CheckUpdateMiddleware : ICheckUpdate
 {
     public async Task InvokeAsync(ApplicationDelegate<UpdateContext> next, UpdateContext context)
     {
-        var httpService = HttpFactory.GetHttpService(context.UpdateUrl);
-        var verInfos= httpService.Get<List<VersionInfo>>("");
-        var updatVerInfo = UpdateApp.GetUpdateVersion(verInfos, context.GetClientVersion());
+        List<VersionInfo>? verInfos;
+        if (context.OnGetUpdateVersionInfo != null)
+        {
+            verInfos = context.OnGetUpdateVersionInfo.Invoke(context);
+        }
+        else
+        {
+            context.UseOssGetVersionInfo();
+            verInfos = context.OnGetUpdateVersionInfo?.Invoke(context);
+        }
+        if (verInfos == null)
+        {
+            context.OnUpdateException?.Invoke(new Exception("从服务器获取版本信息失败!"));
+            return;
+        }
+        var updatVerInfo = UpdateApp.GetUpdateVersion(verInfos, context.ClientVersion);
         if (updatVerInfo == null)
         {
             return;
