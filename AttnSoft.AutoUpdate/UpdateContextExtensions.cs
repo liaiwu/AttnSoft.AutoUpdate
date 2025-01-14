@@ -1,10 +1,7 @@
-﻿
-using AttnSoft.AutoUpdate.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Security;
-using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
@@ -16,7 +13,7 @@ public static partial class UpdateContextExtensions
 {
     public static UpdateContext UseOssGetVersionInfo(this UpdateContext context)
     {
-        context.OnGetUpdateVersionInfo += GetVersionInfoFromOss;
+        context.OnGetUpdateVersionInfo = GetVersionInfoFromOss;
         return context;
     }
     internal async static Task<List<VersionInfo>?> GetVersionInfoFromOss(UpdateContext context)
@@ -32,11 +29,15 @@ public static partial class UpdateContextExtensions
             string responseJsonStr = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<List<VersionInfo>>(responseJsonStr);
         }
-
     }
+    /// <summary>
+    /// 通过WebApi方式获取服务器的版本信息
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
     public static UpdateContext UseWebApiGetVersionInfo(this UpdateContext context)
     {
-        context.OnGetUpdateVersionInfo += GetVersionInfoFroWebApi;
+        context.OnGetUpdateVersionInfo = GetVersionInfoFroWebApi;
         return context;
     }
     internal static async Task<List<VersionInfo>?> GetVersionInfoFroWebApi(UpdateContext context)
@@ -47,11 +48,9 @@ public static partial class UpdateContextExtensions
         {
             ServerCertificateCustomValidationCallback = CheckValidationResult
         });
-        var timeout = httpClient.Timeout;
-        //httpClient.Timeout = TimeSpan.FromSeconds(15);
+
         httpClient.DefaultRequestHeaders.Accept.ParseAdd("text/html, application/xhtml+xml, */*");
         //这里如果有权限认证,建议通过事件在主程序中实现
-
         //if (!string.IsNullOrEmpty(scheme) && !string.IsNullOrEmpty(token))
         //{
         //    httpClient.DefaultRequestHeaders.Authorization =
@@ -64,10 +63,6 @@ public static partial class UpdateContextExtensions
         var responseJsonStr = await result.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<List<VersionInfo>>(responseJsonStr);
     }
-    private static bool CheckValidationResult(
-    HttpRequestMessage? message,
-    X509Certificate2? certificate,
-    X509Chain? chain,
-    SslPolicyErrors sslPolicyErrors
-) => true;
+    private static bool CheckValidationResult(HttpRequestMessage? message,X509Certificate2? 
+        certificate,X509Chain? chain,SslPolicyErrors sslPolicyErrors) => true;
 }

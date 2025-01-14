@@ -9,20 +9,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Common\HttpService\**" />
-	  <EmbeddedResource Remove="Common\HttpService\**" />
-	  <None Remove="Common\HttpService\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Remove="Application\Service\ApplicationServiceCollection.cs" />
 	  <Compile Remove="Common\HashAlgorithms\Md5HashAlgorithm.cs" />
 	  <Compile Remove="Common\HashAlgorithms\Sha1HashAlgorithm.cs" />
 	  <Compile Remove="Common\JsonContext\HttpParameterJsonContext.cs" />
 	  <Compile Remove="Common\JsonContext\VersionRespJsonContext.cs" />
 	  <Compile Remove="LoggerFactory.cs" />
-	  <Compile Remove="Middlewares\CheckUpdateUseOSSMiddleware.cs" />
-	  <Compile Remove="Middlewares\CheckUpdateUseWebApiMiddleware.cs" />
+		
 	</ItemGroup> 
 	<ItemGroup>
 		<!--<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.0" />-->

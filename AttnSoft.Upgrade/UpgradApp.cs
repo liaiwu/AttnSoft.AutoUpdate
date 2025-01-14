@@ -12,21 +12,24 @@ internal class UpgradApp
     UpgradContext Context = new UpgradContext();
     public async Task StartInstall()
     {
-
         var patchPath = Context.PatchPath;
         var version = Context.UpdateVersion;
         var sourcePath = Context.AppPath;
         var targetPath = Context.PatchPath;
         var backupDirectory = Context.BackupPath;
-
-        try
+        if (string.IsNullOrEmpty(sourcePath))
         {
-            await DifferentialCore.Instance?.Dirty(sourcePath, targetPath, backupDirectory);
+            throw new  ArgumentNullException(nameof(sourcePath));
         }
-        catch (Exception e)
+        if (string.IsNullOrEmpty(targetPath))
         {
-            Console.WriteLine("出错了:" + e.ToString());
+            throw new ArgumentNullException(nameof(targetPath));
         }
+        if (string.IsNullOrEmpty(backupDirectory))
+        {
+            throw new ArgumentNullException(nameof(backupDirectory));
+        }
+        await DifferentialCore.Instance?.Dirty(sourcePath, targetPath, backupDirectory);
 
         Clear(patchPath);
         var newfilename = "newVersionInfo.json";
@@ -35,8 +38,6 @@ internal class UpgradApp
         localfilename = Path.Combine(sourcePath, localfilename);
         File.Move(newfilename, localfilename, true);
         StartApp();
-
-
     }
     protected static void Clear(string path)
     {
