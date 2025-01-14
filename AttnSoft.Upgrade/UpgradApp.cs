@@ -14,27 +14,26 @@ internal class UpgradApp
     {
 
         var patchPath = Context.PatchPath;
-
         var version = Context.UpdateVersion;
+        var sourcePath = Context.AppPath;
+        var targetPath = Context.PatchPath;
+        var backupDirectory = Context.BackupPath;
+
         try
         {
-            var sourcePath = Context.AppPath;
-            var targetPath = Context.PatchPath;
-            var backupDirectory = Context.BackupPath;
             await DifferentialCore.Instance?.Dirty(sourcePath, targetPath, backupDirectory);
-
         }
         catch (Exception e)
         {
-            //status = ReportType.Failure;
             Console.WriteLine("出错了:" + e.ToString());
-            //EventManager.Instance.Dispatch(this, new ExceptionEventArgs(e, e.Message));
         }
-        //if (!string.IsNullOrEmpty(_configinfo.UpdateLogUrl))
-        //{
-        //    OpenBrowser(_configinfo.UpdateLogUrl);
-        //}
+
         Clear(patchPath);
+        var newfilename = "newVersionInfo.json";
+        newfilename = Path.Combine(sourcePath, newfilename);
+        var localfilename = "Version.json";
+        localfilename = Path.Combine(sourcePath, localfilename);
+        File.Move(newfilename, localfilename, true);
         StartApp();
 
 

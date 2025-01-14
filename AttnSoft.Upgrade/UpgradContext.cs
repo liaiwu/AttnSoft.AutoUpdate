@@ -14,37 +14,6 @@ public class UpgradContext
     public string PatchPath { get; set; }
     internal UpgradContext()
     {
-        var filename = "newVersionInfo.json";
-        var curPath = AppDomain.CurrentDomain.BaseDirectory;
-        filename= Path.Combine(curPath, filename);
-        string jsonString = string.Empty;
-        if (File.Exists(filename))
-        { jsonString = File.ReadAllText(filename); }
-        else
-        {
-            throw new FileNotFoundException("newVersionInfo.json not found!");
-        }
-        if(string.IsNullOrEmpty(jsonString))
-        {
-            throw new ArgumentNullException("newVersionInfo.json is null or empty!");
-        }
-
-        UpdateVersion = JsonSerializer.Deserialize<VersionInfo>(jsonString, VersionInfoJsonContext.Default.VersionInfo);
-        if (UpdateVersion != null)
-        {
-            if(UpdateVersion.BlackFiles!= null && UpdateVersion.BlackFiles.Count > 0)
-            {
-                BlackListManager.Instance.AddBlackFiles(UpdateVersion.BlackFiles);
-            }
-            if (UpdateVersion.BlackFormats != null && UpdateVersion.BlackFormats.Count > 0)
-            {
-                BlackListManager.Instance.AddBlackFileFormats(UpdateVersion.BlackFormats);
-            }
-            if (UpdateVersion.SkipDirectorys != null && UpdateVersion.SkipDirectorys.Count > 0)
-            {
-                BlackListManager.Instance.AddSkipDirectorys(UpdateVersion.SkipDirectorys);
-            }
-        }
         string[] args = Environment.GetCommandLineArgs();
         for (var index = 0; index < args.Length; index++)
         {
@@ -74,6 +43,38 @@ public class UpgradContext
         {
             throw new ArgumentNullException("PatchPath is null or empty!");
         }
+
+        var filename = "newVersionInfo.json";
+        filename= Path.Combine(AppPath, filename);
+        string jsonString = string.Empty;
+        if (File.Exists(filename))
+        { jsonString = File.ReadAllText(filename); }
+        else
+        {
+            throw new FileNotFoundException("newVersionInfo.json not found!");
+        }
+        if(string.IsNullOrEmpty(jsonString))
+        {
+            throw new ArgumentNullException("newVersionInfo.json is null or empty!");
+        }
+
+        UpdateVersion = JsonSerializer.Deserialize<VersionInfo>(jsonString, VersionInfoJsonContext.Default.VersionInfo);
+        if (UpdateVersion != null)
+        {
+            if(UpdateVersion.BlackFiles!= null && UpdateVersion.BlackFiles.Count > 0)
+            {
+                BlackListManager.Instance.AddBlackFiles(UpdateVersion.BlackFiles);
+            }
+            if (UpdateVersion.BlackFormats != null && UpdateVersion.BlackFormats.Count > 0)
+            {
+                BlackListManager.Instance.AddBlackFileFormats(UpdateVersion.BlackFormats);
+            }
+            if (UpdateVersion.SkipDirectorys != null && UpdateVersion.SkipDirectorys.Count > 0)
+            {
+                BlackListManager.Instance.AddSkipDirectorys(UpdateVersion.SkipDirectorys);
+            }
+        }
+
     }
 
 }

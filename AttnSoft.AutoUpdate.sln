@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinAppClient", "Test\WinApp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttnSoft.AutoUpdate", "AttnSoft.AutoUpdate\AttnSoft.AutoUpdate.csproj", "{4C90389B-A464-478D-AC82-2072943AD292}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttnSoft.Upgrad", "AttnSoft.Upgrad\AttnSoft.Upgrad.csproj", "{12CA369D-AF51-4039-86ED-889703675FA1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttnSoft.Upgrade", "AttnSoft.Upgrade\AttnSoft.Upgrade.csproj", "{12CA369D-AF51-4039-86ED-889703675FA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
