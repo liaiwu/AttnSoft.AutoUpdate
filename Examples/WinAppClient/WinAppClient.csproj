@@ -7,6 +7,7 @@
 		<UseWindowsForms>true</UseWindowsForms>
 		<LangVersion>default</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<Version>1.0.0.0</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -26,7 +27,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\AttnSoft.AutoUpdate\AttnSoft.AutoUpdate.csproj" />
+	  <ProjectReference Include="..\..\AttnSoft.AutoUpdate\AttnSoft.AutoUpdate.csproj" />
 	</ItemGroup>
 
 
