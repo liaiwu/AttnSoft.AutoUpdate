@@ -11,12 +11,21 @@ using System.Threading.Tasks;
 
 namespace AttnSoft.AutoUpdate
 {
+    ///// <summary>
+    ///// 表示可以处理应用请求的委托
+    ///// </summary>
+    ///// <typeparam name="TContext">中间件上下文类型</typeparam>
+    ///// <param name="context">中间件上下文</param>
+    ///// <returns></returns>
+    //public delegate Task ApplicationDelegate<TContext>(TContext context);
+
     public class UpdateContext
     {
         /// <summary>
         /// 发现新版本事件
         /// </summary>
-        public Action<ApplicationDelegate<UpdateContext>, UpdateContext>? OnFindNewVersion;
+        public Func<ApplicationDelegate<UpdateContext>, UpdateContext,Task>? OnFindNewVersion;
+
 
         //触发下载取消事件
         //public event Action? OnDownloadCanceled;

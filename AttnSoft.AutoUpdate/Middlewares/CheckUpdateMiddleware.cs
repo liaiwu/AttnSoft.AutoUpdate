@@ -32,13 +32,14 @@ public class CheckUpdateMiddleware : ICheckUpdate
         var updatVerInfo = UpdateApp.GetUpdateVersion(verInfos, context.ClientVersion);
         if (updatVerInfo == null)
         {
+            Console.WriteLine("版本较新,不需要更新!");
             return;
         }
         context.IsMainUpdate = true;
         context.UpdateVersion = updatVerInfo;
         if (context.OnFindNewVersion != null)
         {
-            context.OnFindNewVersion(next, context);
+            await context.OnFindNewVersion(next, context);
         }
         else
         {
