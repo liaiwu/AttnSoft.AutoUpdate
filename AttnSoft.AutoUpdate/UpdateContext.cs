@@ -66,7 +66,7 @@ namespace AttnSoft.AutoUpdate
         /// <summary>
         /// Need to start the name of the app.
         /// </summary>
-        public string UpgradName { get; set; } = "AttnSoft.Upgrade";
+        public string UpgradName { get; set; } = "Upgrade";
 
         string? _startAppCmd;
         /// <summary>

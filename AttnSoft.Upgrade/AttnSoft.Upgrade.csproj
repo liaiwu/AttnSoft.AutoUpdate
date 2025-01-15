@@ -5,6 +5,7 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<InvariantGlobalization>true</InvariantGlobalization>
+		<AssemblyName>Upgrade</AssemblyName>
 		<LangVersion>default</LangVersion>
 		<PublishAot>true</PublishAot>
 	</PropertyGroup>
