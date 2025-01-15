@@ -27,7 +27,8 @@ namespace AttnSoft.AutoUpdate
         }
         public static UpdateApp CreateBuilder(UpdateContext context)
         {
-            var builder = new UpdateApp(context); 
+            var builder = new UpdateApp(context);
+            builder.Use<ICheckCompletion>();
             builder.Use<ICheckUpdate>();
             builder.Use<IBackup>();
             builder.Use<IDownload>();

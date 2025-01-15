@@ -49,8 +49,14 @@ internal class UpgradApp
     {
         try
         {
-            var mainAppPath = Path.Combine(Context.AppPath, Context.UpdateVersion.StartAppCmd);
-            Process.Start(mainAppPath);
+            var mainFileName = Path.Combine(Context.AppPath, Context.UpdateVersion.StartAppCmd);
+            var processStartInfo = new ProcessStartInfo
+            {
+                FileName = mainFileName,
+                UseShellExecute = true,
+                Arguments= "AttnSoft.AutoUpdate.Successful"
+            };
+            Process.Start(processStartInfo);
         }
         finally
         {

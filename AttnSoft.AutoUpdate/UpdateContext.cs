@@ -21,11 +21,12 @@ namespace AttnSoft.AutoUpdate
 
     public class UpdateContext
     {
+
+        public Func<UpdateContext, Task<List<VersionInfo>?>>? OnGetUpdateVersionInfo;
         /// <summary>
         /// 发现新版本事件
         /// </summary>
         public Func<ApplicationDelegate<UpdateContext>, UpdateContext,Task>? OnFindNewVersion;
-
 
         //触发下载取消事件
         //public event Action? OnDownloadCanceled;
@@ -35,13 +36,11 @@ namespace AttnSoft.AutoUpdate
         public Action<Exception>? OnDownloadException;
         //触发下载进度事件
         public Action<long, int>? OnDownloadProgressChanged;
-
-        //触发更新完成事件
-        public Action<UpdateContext>? OnUpdateCompleted;
         //触发更新异常事件
         public Action<Exception>? OnUpdateException;
 
-        public Func<UpdateContext, Task<List<VersionInfo>?>> OnGetUpdateVersionInfo;
+        //触发更新完成事件
+        public Action<UpdateContext>? OnUpdateCompleted;
 
         public IServiceCollection Services { get; } = new ServiceCollection();
         public IServiceProvider CreateServiceProvider()
@@ -50,6 +49,7 @@ namespace AttnSoft.AutoUpdate
         }
         public UpdateContext()
         {
+            Services.AddSingleton<ICheckCompletion, CheckCompletionMiddleware>();
             Services.AddSingleton<ICheckUpdate, CheckUpdateMiddleware>();
             Services.AddSingleton<IBackup, BackupMiddleware>();
             Services.AddSingleton<IDownload, DownloadMiddleware>();
@@ -66,7 +66,7 @@ namespace AttnSoft.AutoUpdate
         /// <summary>
         /// Need to start the name of the app.
         /// </summary>
-        public string UpgradName { get; set; } = "Upgrade";
+        public string UpgradName { get; set; } = "AttnSoft.Upgrade";
 
         string? _startAppCmd;
         /// <summary>
@@ -127,7 +127,7 @@ namespace AttnSoft.AutoUpdate
         /// The main program update version.
         /// </summary>
         public VersionInfo UpdateVersion { get; set; }
-        string _appPath;
+        string? _appPath;
         public string AppPath
         {
             get
