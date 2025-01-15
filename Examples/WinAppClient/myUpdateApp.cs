@@ -15,9 +15,8 @@ namespace WinAppClient
         {
             try
             {
-                Console.WriteLine($"主程序初始化，{DateTime.Now}！");
-                Console.WriteLine("当前运行目录：" + Thread.GetDomain().BaseDirectory);
-                await Task.Delay(100);
+                Console.WriteLine($"{DateTime.Now}:Initiate the upgrade program.");
+                Console.WriteLine("Current working directory:" + Thread.GetDomain().BaseDirectory);
 
                 //UpdateContext? context = new UpdateContext()
                 //{
@@ -35,9 +34,9 @@ namespace WinAppClient
                 {
                     Console.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
                 };
-                context.OnDownloadCompleted = () => { Console.WriteLine("升级包下载完成"); };
+                context.OnDownloadCompleted = () => { Console.WriteLine("The upgrade package has been downloaded successfully.");};
 
-                context.OnDownloadProgressChanged = (long arg1, int arg2) => { Console.WriteLine($"当前下载版本：总大小：{arg1}, 进度百分比：{arg2}%"); };
+                context.OnDownloadProgressChanged = (long arg1, int arg2) => { Console.WriteLine($"Current download version: Total size:{arg1}, Progress percentage:{arg2}%"); };
 
                 await UpdateApp.CreateBuilder(context).StartUpdateAsync();
             }

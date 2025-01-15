@@ -1,0 +1,15 @@
+{
+	"recordId": 1,
+	"version": "1.0.0.0",
+	"releaseDate": "2025-01-15T09:23:19",
+	"url": "http://update.attnsoft.com/demo/v1/WinAppClient.zip",
+	"hash": "",
+	"startAppCmd": "WinAppClient",
+	"requiredMinVersion": "",
+	"isForcibly": false,
+	"desc": "Introduction to the new version features.",
+	"updateLogUrl": null,
+	"blackFileFormats": [".patch", ".zip", ".rar", ".tar", ".pdb"],
+	"blackFiles": [],
+	"skipDirectorys": ["app-", "fail"]
+}

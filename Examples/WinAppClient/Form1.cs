@@ -1,4 +1,5 @@
 using AttnSoft.AutoUpdate;
+using AttnSoft.AutoUpdate.Middlewares;
 using System.Reflection;
 
 namespace WinAppClient
@@ -11,6 +12,7 @@ namespace WinAppClient
             this.label1.Text = "升级依据版本 V"+ myUpdateApp.UpContext.ClientVersion.ToString();
             this.label3.Text = "文件版本 V" + Assembly.GetEntryAssembly().GetName().Version.ToString();
             myUpdateApp.UpContext.OnFindNewVersion += OnFindNewVersion;
+
         }
         private async Task OnFindNewVersion(ApplicationDelegate<UpdateContext> next, UpdateContext context)
         {
@@ -36,7 +38,15 @@ namespace WinAppClient
         {
 
         }
-
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            //因为这里是手动检查升级
+            if (CheckCompletionMiddleware.CheckIsCompletion())
+            {
+                MessageBox.Show("升级完成!");
+            }
+        }
 
     }
 }
