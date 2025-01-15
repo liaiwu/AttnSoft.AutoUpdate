@@ -1,8 +1,9 @@
 ﻿
+using GeneralUpdate.Common.HashAlgorithms;
 using System;
 using System.Linq;
 
-namespace GeneralUpdate.Common.HashAlgorithms
+namespace AttnSoft.AutoUpdate.Common
 {
     internal static class HashAlgorithmService
     {

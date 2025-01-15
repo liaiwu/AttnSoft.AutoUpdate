@@ -1,4 +1,4 @@
-﻿using GeneralUpdate.Common.HashAlgorithms;
+﻿using AttnSoft.AutoUpdate.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;

@@ -8,14 +8,16 @@ internal class Program
     static async Task Main(string[] args)
     {
 
-        Console.WriteLine($"{DateTime.Now}：升级程序AttnSoft.Upgrade开始安装……");
-        //Console.WriteLine("请按任意键继续……");
-        //Console.ReadKey();
+        Console.WriteLine($"{DateTime.Now}:The AttnSoft.Upgrade is starting to install...");
+#if DEBUG
+        Console.WriteLine("Please press any key to continue...");
+        Console.ReadKey();
+#endif
         try
         {
             UpgradApp upgradApp = new UpgradApp();
             await upgradApp.StartInstall();
-            Console.WriteLine($"安装结束，{DateTime.Now}！");
+            Console.WriteLine($"{DateTime.Now}:Installation is complete.");
         }
         catch (Exception ex)
         {

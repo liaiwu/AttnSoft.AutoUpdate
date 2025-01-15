@@ -1,4 +1,4 @@
-﻿using GeneralUpdate.Common.Compress;
+﻿using AttnSoft.AutoUpdate.Common;
 using GeneralUpdate.Common.FileBasic;
 using System.Threading.Tasks;
 

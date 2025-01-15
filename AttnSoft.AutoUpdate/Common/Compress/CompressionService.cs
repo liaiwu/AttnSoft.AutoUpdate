@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GeneralUpdate.Common.Compress
+namespace AttnSoft.AutoUpdate.Common
 {
     internal static class CompressionService
     {

@@ -1,5 +1,4 @@
-﻿using GeneralUpdate.Common.Shared.Object;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -26,13 +25,13 @@ public class CheckUpdateMiddleware : ICheckUpdate
         }
         if (verInfos == null)
         {
-            context.OnUpdateException?.Invoke(new Exception("从服务器获取版本信息失败!"));
+            context.OnUpdateException?.Invoke(new Exception("Failed to retrieve version information from server!"));
             return;
         }
         var updatVerInfo = UpdateApp.GetUpdateVersion(verInfos, context.ClientVersion);
         if (updatVerInfo == null)
         {
-            Console.WriteLine("版本较新,不需要更新!");
+            Console.WriteLine("Version is newer, no update required!");
             return;
         }
         context.IsMainUpdate = true;

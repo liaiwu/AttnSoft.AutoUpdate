@@ -1,12 +1,12 @@
-﻿using GeneralUpdate.Differential.Binary;
+﻿using AttnSoft.AutoUpdate.Common;
+using GeneralUpdate.Common.FileBasic;
+using GeneralUpdate.Common.JsonContext;
+using GeneralUpdate.Differential.Binary;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using GeneralUpdate.Common.FileBasic;
-using GeneralUpdate.Common.HashAlgorithms;
-using GeneralUpdate.Common.JsonContext;
 
 namespace GeneralUpdate.Differential
 {
