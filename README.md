@@ -7,6 +7,7 @@ AttnSoft.AutoUpdate 是一款轻量级跨平台应用程序自动升级组件。
 本组件支持两种存储版本信息的方式，分别为:
 1. OSS:在文件服务器(对象存储服务)上配置Version.json,用来描述发布的版本信息.
 2. WebApi:组件通过Web服务的方式获取版本信息.
+
 以上两种方式提供的版本信息都是json格式的，具体内容如下:
 ```json
 [
@@ -61,7 +62,6 @@ UpdateContext? context = new UpdateContext()
     UpdateUrl = "http://127.0.0.1:5000/Verification"
 };
 context.UseWebApi();
-context.UseWebApi();
 context.OnGetUpdateVersionInfo += (context) =>
 {
     var uri = new Uri(context.UpdateUrl);
@@ -76,7 +76,6 @@ context.OnGetUpdateVersionInfo += (context) =>
 };
 await UpdateApp.CreateBuilder(context).StartUpdateAsync();
 ```
-
 
 
 ## 支持框架
