@@ -2,12 +2,13 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFrameworks>net6.0-windows</TargetFrameworks>
+		<TargetFrameworks>net461; net6.0-windows</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<UseWindowsForms>true</UseWindowsForms>
 		<LangVersion>default</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Version>1.0.1.0</Version>
+		<ApplicationIcon>AttnSoft.Update.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -23,6 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Include="AttnSoft.Update.ico" />
 	  <Content Include="Upgrade.exe">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>

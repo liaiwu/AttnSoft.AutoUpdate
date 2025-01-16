@@ -1,5 +1,8 @@
 
+using AttnSoft.AutoUpdate;
 using System.Runtime.InteropServices;
+using System.Text.Json;
+using System.Text;
 
 namespace WinAppClient
 {
@@ -13,13 +16,32 @@ namespace WinAppClient
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             SetProcessDPIAware();
-            //StartUpdate();
+            //启动后自动启动升级
+            //UpdateContext? context = new UpdateContext()
+            //{
+            //    UpdateUrl = "http://update.attnsoft.com/demo/v1/version.json"
+            //};
+            //context.UseWebApi();
+
+            //context.OnUpdateException = (ex) =>
+            //{
+            //    Console.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+            //};
+            //context.OnDownloadCompleted = () => { Console.WriteLine("The upgrade package has been downloaded successfully."); };
+            //context.OnDownloadProgressChanged = (long arg1, int arg2) => { Console.WriteLine($"Current download version: Total size:{arg1}, Progress percentage:{arg2}%"); };
+            //await UpdateApp.CreateBuilder(context).StartUpdateAsync();
+
+#if NETCOREAPP
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
+#else
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+#endif
             Application.Run(new Form1());
         }
 
