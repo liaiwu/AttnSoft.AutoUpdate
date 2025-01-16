@@ -6,6 +6,20 @@
 		<Version>1.0.0</Version>
 		<Nullable>enable</Nullable>
 		<LangVersion>default</LangVersion>
+		<Authors>LAW</Authors>
+		<ApplicationIcon>AttnSoft.Update.ico</ApplicationIcon>
+		<Description>A lightweight cross-platform application automatic upgrade component.</Description>
+		<SignAssembly>False</SignAssembly>
+		<RepositoryUrl>https://github.com/liaiwu/AttnSoft.AutoUpdate.git</RepositoryUrl>
+		<Copyright>Copyright © 2025 LAW. All rights reserved.</Copyright>
+		<PackageReleaseNotes>A lightweight cross-platform application automatic upgrade component.</PackageReleaseNotes>
+		<PackageProjectUrl>https://github.com/liaiwu/AttnSoft.AutoUpdate</PackageProjectUrl>
+		<Title>AttnSoft.AutoUpdate</Title>
+		<PackageLicenseUrl>https://github.com/liaiwu/AttnSoft.AutoUpdate?tab=MIT-1-ov-file</PackageLicenseUrl>
+		<RepositoryType>public</RepositoryType>
+		<PackageTags>autoupdate,upgrade,update,attnsoft.autoupdate</PackageTags>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<PackageIcon>AttnSoft.Update.png</PackageIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -20,6 +34,17 @@
 	  <Compile Remove="Common\JsonContext\VersionRespJsonContext.cs" />
 	  <Compile Remove="LoggerFactory.cs" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="AttnSoft.Update.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\AttnSoft.Update.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
 	
 	<ItemGroup>
 		<!--<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.0" />-->
@@ -31,4 +56,11 @@
 		<PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Update="AttnSoft.Update.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+	
 </Project>
