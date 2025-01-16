@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace AttnSoft.AutoUpdate;
 public static partial class UpdateContextExtensions
 {
-    public static UpdateContext UseOssGetVersionInfo(this UpdateContext context)
+    public static UpdateContext UseOss(this UpdateContext context)
     {
         context.OnGetUpdateVersionInfo = GetVersionInfoFromOss;
         return context;
@@ -35,7 +35,7 @@ public static partial class UpdateContextExtensions
     /// </summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    public static UpdateContext UseWebApiGetVersionInfo(this UpdateContext context)
+    public static UpdateContext UseWebApi(this UpdateContext context)
     {
         context.OnGetUpdateVersionInfo = GetVersionInfoFroWebApi;
         return context;
