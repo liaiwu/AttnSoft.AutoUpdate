@@ -3,8 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
+
 using System.Threading;
 
 namespace GeneralUpdate.Common.FileBasic
@@ -50,32 +49,6 @@ namespace GeneralUpdate.Common.FileBasic
             return ComparisonResult;
         }
 
-        public static void CreateJson<T>(string targetPath, T obj, JsonTypeInfo<T>? typeInfo = null) where T : class
-        {
-            var folderPath = Path.GetDirectoryName(targetPath) ??
-                             throw new ArgumentException("invalid path", nameof(targetPath));
-
-            if (!Directory.Exists(folderPath))
-                Directory.CreateDirectory(folderPath);
-
-            var jsonString = typeInfo != null ? JsonSerializer.Serialize(obj, typeInfo) : JsonSerializer.Serialize(obj);
-            File.WriteAllText(targetPath, jsonString);
-        }
-
-        public static T? GetJson<T>(string path, JsonTypeInfo<T>? typeInfo = null) where T : class
-        {
-            if (File.Exists(path))
-            {
-                var json = File.ReadAllText(path);
-                if (typeInfo != null)
-                {
-                    return JsonSerializer.Deserialize(json, typeInfo);
-                }
-                return JsonSerializer.Deserialize<T>(json);
-            }
-
-            return default;
-        }
         public static string GetTempDirectory()
         {
             return GetTempDirectory("patchs");

@@ -1,9 +1,9 @@
 ﻿using AttnSoft.AutoUpdate;
+using AttnSoft.AutoUpdate.Common;
 using GeneralUpdate.Common.FileBasic;
 using GeneralUpdate.Common.JsonContext;
 using System;
 using System.IO;
-using System.Text.Json;
 
 namespace AttnSoft.Upgrad;
 public class UpgradContext
@@ -57,8 +57,11 @@ public class UpgradContext
         {
             throw new ArgumentNullException("newVersionInfo.json is null or empty!");
         }
-
-        UpdateVersion = JsonSerializer.Deserialize<VersionInfo>(jsonString, VersionInfoJsonContext.Default.VersionInfo);
+#if NETFRAMEWORK
+        UpdateVersion = DefaultJsonConvert.JsonConvert.Deserialize<VersionInfo>(jsonString);
+#else
+        UpdateVersion = DefaultJsonConvert.JsonConvert.Deserialize<VersionInfo>(jsonString, VersionInfoJsonContext.Default.VersionInfo);
+#endif
         if (UpdateVersion != null)
         {
             if(UpdateVersion.BlackFiles!= null && UpdateVersion.BlackFiles.Count > 0)

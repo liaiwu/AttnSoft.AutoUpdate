@@ -1,11 +1,9 @@
 ﻿using AttnSoft.AutoUpdate.Common;
 using GeneralUpdate.Common.FileBasic;
-using GeneralUpdate.Common.JsonContext;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace AttnSoft.AutoUpdate.Middlewares;
@@ -34,7 +32,8 @@ public class StartUpgradMiddleware : IStartUpgrad
             {
                 context.UpdateVersion.StartAppCmd = context.StartAppCmd;
             }
-            var ProcessInfo = JsonSerializer.Serialize(context.UpdateVersion, VersionInfoJsonContext.Default.VersionInfo);
+            //var ProcessInfo = JsonSerializer.Serialize(context.UpdateVersion, VersionInfoJsonContext.Default.VersionInfo);
+            var ProcessInfo = DefaultJsonConvert.JsonConvert.Serialize(context.UpdateVersion);
             File.WriteAllText(ProcessInfoFileName, ProcessInfo);
 
             var arguments = new Collection<string>

@@ -13,6 +13,7 @@ namespace GeneralUpdate.Common.Compress;
 public class ZipCompressionStrategy : ICompressionStrategy
 {
     static Encoding defaultEncoding = Encoding.Default;
+#if !NETFRAMEWORK
     static ZipCompressionStrategy()
     {
         try
@@ -25,6 +26,7 @@ public class ZipCompressionStrategy : ICompressionStrategy
             //Console.WriteLine($"注册编码失败：{ex.Message}");
         }
     }
+#endif
     public static Encoding DefaultEncoding => defaultEncoding;
     /// <summary>
     /// Creates a zip archive containing the files and subdirectories of the specified directory.

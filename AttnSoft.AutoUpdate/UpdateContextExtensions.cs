@@ -1,12 +1,14 @@
-﻿using System;
+﻿using AttnSoft.AutoUpdate.Common;
+using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
+using System.Net;
+
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
+#if !NETFRAMEWORK
+using System.Net.Http;
+#endif
 
 namespace AttnSoft.AutoUpdate;
 public static partial class UpdateContextExtensions
@@ -18,17 +20,31 @@ public static partial class UpdateContextExtensions
     }
     internal async static Task<List<VersionInfo>?> GetVersionInfoFromOss(UpdateContext context)
     {
+#if !NETFRAMEWORK
         using var httpClient = new HttpClient(new HttpClientHandler
         {
-            ServerCertificateCustomValidationCallback = CheckValidationResult
+            ServerCertificateCustomValidationCallback = (a, b, c, d) => true
         });
 
         using (HttpResponseMessage response = await httpClient.GetAsync(context.UpdateUrl, HttpCompletionOption.ResponseHeadersRead))
         {
             response.EnsureSuccessStatusCode();
             string responseJsonStr = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<List<VersionInfo>>(responseJsonStr);
+            return DefaultJsonConvert.JsonConvert.Deserialize<List<VersionInfo>>(responseJsonStr);
         }
+#else
+        using (WebClient client = new WebClient())
+        {
+            var data= await client.DownloadDataTaskAsync(new Uri(context.UpdateUrl));
+            if (data != null && data.Length > 0)
+            {
+                string responseJsonStr = Encoding.UTF8.GetString(data);
+                return DefaultJsonConvert.JsonConvert.Deserialize<List<VersionInfo>>(responseJsonStr);
+            }
+        }
+        return new List<VersionInfo>();
+#endif
+
     }
     /// <summary>
     /// 通过WebApi方式获取服务器的版本信息
@@ -42,11 +58,11 @@ public static partial class UpdateContextExtensions
     }
     internal static async Task<List<VersionInfo>?> GetVersionInfoFroWebApi(UpdateContext context)
     {
-
+#if !NETFRAMEWORK
         var uri = new Uri(context.UpdateUrl);
         using var httpClient = new HttpClient(new HttpClientHandler
         {
-            ServerCertificateCustomValidationCallback = CheckValidationResult
+            ServerCertificateCustomValidationCallback = (a, b, c, d) => true
         });
 
         httpClient.DefaultRequestHeaders.Accept.ParseAdd("text/html, application/xhtml+xml, */*");
@@ -61,8 +77,22 @@ public static partial class UpdateContextExtensions
         var stringContent = new StringContent(postData, Encoding.UTF8, "application/json");
         var result = await httpClient.PostAsync(uri, stringContent);
         var responseJsonStr = await result.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<List<VersionInfo>>(responseJsonStr);
+        //string responseJsonStr = "";
+        return DefaultJsonConvert.JsonConvert.Deserialize<List<VersionInfo>>(responseJsonStr);
+#else
+        using (WebClient client = new WebClient())
+        {
+            client.Headers[HttpRequestHeader.ContentType] = "application/json";
+            string postData = $"{{\"Version\": \"{context.ClientVersion}\", \"AppKey\": \"{context.AppSecretKey}\"}}";
+            var data = await client.UploadDataTaskAsync(new Uri(context.UpdateUrl), "POST", Encoding.UTF8.GetBytes(postData));
+            if (data != null && data.Length > 0)
+            {
+                string responseJsonStr = Encoding.UTF8.GetString(data);
+                return DefaultJsonConvert.JsonConvert.Deserialize<List<VersionInfo>>(responseJsonStr);
+            }
+        }
+        return new List<VersionInfo>();
+#endif
     }
-    private static bool CheckValidationResult(HttpRequestMessage? message,X509Certificate2? 
-        certificate,X509Chain? chain,SslPolicyErrors sslPolicyErrors) => true;
+
 }

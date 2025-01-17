@@ -8,6 +8,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+#if !NETFRAMEWORK
+using System.Text.Json.Serialization.Metadata;
+#endif
+
 namespace GeneralUpdate.Differential
 {
     public sealed class DifferentialCore
@@ -66,7 +70,7 @@ namespace GeneralUpdate.Differential
                     && exceptFiles.Any())
                 {
                     var path = Path.Combine(patchPath, DELETE_FILES_NAME);
-                    StorageManager.CreateJson(path, exceptFiles);
+                    CreateJson(path, exceptFiles);
                 }
             }
             catch (Exception ex)
@@ -124,8 +128,11 @@ namespace GeneralUpdate.Differential
             var json = patchFiles.FirstOrDefault(i => i.Name.Equals(DELETE_FILES_NAME));
             if (json == null)
                 return;
-            
-            var deleteFiles = StorageManager.GetJson<List<FileNode>>(json.FullName, FileNodesJsonContext.Default.ListFileNode);
+#if !NETFRAMEWORK
+            var deleteFiles = GetJson<List<FileNode>>(json.FullName, FileNodesJsonContext.Default.ListFileNode);
+#else
+            var deleteFiles = GetJson<List<FileNode>>(json.FullName);
+#endif
             if (deleteFiles == null)
                 return;
             
@@ -218,6 +225,54 @@ namespace GeneralUpdate.Differential
             {
             }
         }
-        #endregion
+        public static void CreateJson(string targetPath, object obj)
+        {
+            var folderPath = Path.GetDirectoryName(targetPath) ??
+                             throw new ArgumentException("invalid path", nameof(targetPath));
+
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+            var jsonString = DefaultJsonConvert.JsonConvert.Serialize(obj);
+            //var jsonString = typeInfo != null ? JsonSerializer.Serialize(obj, typeInfo) : JsonSerializer.Serialize(obj);
+            File.WriteAllText(targetPath, jsonString);
+        }
+        //public static void CreateJson<T>(string targetPath, T obj, JsonTypeInfo<T>? typeInfo = null) where T : class
+        //{
+        //    var folderPath = Path.GetDirectoryName(targetPath) ??
+        //                     throw new ArgumentException("invalid path", nameof(targetPath));
+
+        //    if (!Directory.Exists(folderPath))
+        //        Directory.CreateDirectory(folderPath);
+
+        //    var jsonString = typeInfo != null ? JsonSerializer.Serialize(obj, typeInfo) : JsonSerializer.Serialize(obj);
+        //    File.WriteAllText(targetPath, jsonString);
+        //}
+#if !NETFRAMEWORK
+        public static T? GetJson<T>(string path, JsonTypeInfo<T>? typeInfo = null) where T : class
+        {
+            if (File.Exists(path))
+            {
+                var json = File.ReadAllText(path);
+                if (typeInfo != null)
+                {
+                    return DefaultJsonConvert.JsonConvert.Deserialize(json, typeInfo);
+                }
+                return DefaultJsonConvert.JsonConvert.Deserialize<T>(json);
+            }
+
+            return default;
+        }
+#else
+        public static T? GetJson<T>(string path) where T : class
+        {
+            if (File.Exists(path))
+            {
+                var json = File.ReadAllText(path);
+                return DefaultJsonConvert.JsonConvert.Deserialize<T>(json);
+            }
+            return default;
+        }
+#endif
+#endregion
     }
 }

@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<!--<TargetFramework>netstandard2.0</TargetFramework>-->
-		<TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
-		<Version>1.0.0</Version>
+		<TargetFrameworks>net461;netstandard2.0;net6.0;net8.0;net9.0</TargetFrameworks>
+		<Version>2.0.0</Version>
 		<Nullable>enable</Nullable>
 		<LangVersion>default</LangVersion>
 		<Authors>LAW</Authors>
@@ -23,39 +23,60 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Common\JsonContext\**" />
 	  <Compile Remove="Common\Object\**" />
+	  <EmbeddedResource Remove="Common\JsonContext\**" />
 	  <EmbeddedResource Remove="Common\Object\**" />
+	  <None Remove="Common\JsonContext\**" />
 	  <None Remove="Common\Object\**" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Compile Remove="Common\HashAlgorithms\Md5HashAlgorithm.cs" />
 	  <Compile Remove="Common\HashAlgorithms\Sha1HashAlgorithm.cs" />
-	  <Compile Remove="Common\JsonContext\VersionRespJsonContext.cs" />
 	  <Compile Remove="LoggerFactory.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Upgrade\AOT\Upgrade.exe" />
+	  <None Remove="Upgrade\Framework\Upgrade.exe" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Content Include="AttnSoft.Update.ico" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
+		<EmbeddedResource Include="Upgrade\Framework\Upgrade.exe" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETFramework'">
+		<EmbeddedResource Include="Upgrade\AOT\Upgrade.exe" />
+	</ItemGroup>
+	
+	<!--<ItemGroup Condition="$(RuntimeIdentifier.StartsWith('win')) and '$(TargetFrameworkIdentifier)' != '.NETFramework'">
+		<EmbeddedResource Include="Upgrade\AOT\Upgrade.exe" />
+	</ItemGroup>-->
+	
 	<ItemGroup>
 	  <None Include="..\AttnSoft.Update.png">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
 	  </None>
 	</ItemGroup>
-	
-	<ItemGroup>
-		<!--<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.0" />-->
-		<!--<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />-->
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
-		<PackageReference Include="System.Net.Http" Version="4.3.4" />
-		<PackageReference Include="System.Net.Requests" Version="4.3.0" />
-		<PackageReference Include="System.Text.Json" Version="9.0.0" />
-		<PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<!--<PackageReference Include="System.Net.Http" Version="4.3.4" />
+		<PackageReference Include="System.Net.Requests" Version="4.3.0" />-->
+		<Reference Include="System.IO.Compression" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETFramework'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+		<PackageReference Include="System.Text.Json" Version="9.0.0" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETStandard'">
+		<PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
+	</ItemGroup>
 	<ItemGroup>
 		<None Update="AttnSoft.Update.png">
 			<Pack>True</Pack>

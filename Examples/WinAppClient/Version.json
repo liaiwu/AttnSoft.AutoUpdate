@@ -1,15 +1,15 @@
 {
-	"recordId": 1,
-	"version": "1.0.0.0",
-	"requiredMinVersion": "",
-	"url": "http://update.attnsoft.com/demo/v1/WinAppClient.zip",
-	"hash": "",
-	"startAppCmd": "WinAppClient",
-	"isForcibly": false,
-	"desc": "Introduction to the new version features.",
-	"releaseDate": "2025-01-15T09:23:19",
-	"updateLogUrl": null,
-	"blackFileFormats": [ ".patch", ".zip", ".rar", ".tar", ".pdb" ],
-	"blackFiles": [],
-	"skipDirectorys": [ "app-", "fail" ]
+	"RecordId": 1,
+	"Version": "1.0.0.0",
+	"RequiredMinVersion": "",
+	"Url": "http://update.attnsoft.com/demo/v1/WinAppClient.zip",
+	"Hash": "",
+	"StartAppCmd": "WinAppClient",
+	"IsForcibly": false,
+	"Desc": "Introduction to the new version features.",
+	"ReleaseDate": "2025-01-15T09:23:19",
+	"UpdateLogUrl": null,
+	"BlackFileFormats": [ ".patch", ".zip", ".rar", ".tar", ".pdb" ],
+	"BlackFiles": [],
+	"SkipDirectorys": [ "app-", "fail" ]
 }

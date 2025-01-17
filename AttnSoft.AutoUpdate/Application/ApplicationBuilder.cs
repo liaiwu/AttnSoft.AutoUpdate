@@ -1,8 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+#if !NETFRAMEWORK
+using Microsoft.Extensions.DependencyInjection;
+#endif
 namespace AttnSoft.AutoUpdate
 {
     /// <summary>
@@ -140,10 +143,11 @@ namespace AttnSoft.AutoUpdate
         public ApplicationBuilder<TContext> Use<TMiddleware>()
             where TMiddleware : IApplicationMiddleware<TContext>
         {
-            //var type1=typeof(TMiddleware);
-            //var type2 = ApplicationServices.GetService(type1);
-
+#if NETFRAMEWORK
+            var middleware = this.ApplicationServices.GetService<TMiddleware>();           
+#else
             var middleware = ActivatorUtilities.GetServiceOrCreateInstance<TMiddleware>(this.ApplicationServices);
+#endif
             return this.Use(middleware);
         }
 

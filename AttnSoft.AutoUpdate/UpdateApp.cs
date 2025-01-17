@@ -40,27 +40,6 @@ namespace AttnSoft.AutoUpdate
             return builder;
         }
 
-        ///// <summary>
-        ///// 检查更新
-        ///// </summary>
-        //public async Task CheckForUpdateAsync()
-        //{
-        //    try
-        //    {
-        //        //var versionService = new VersionService();
-        //        //var latestVersion = await versionService.GetLatestVersionAsync(Context.AppId);
-
-        //        //if (latestVersion.Version > Context.CurrentVersion)
-        //        //{
-        //        //    OnFindNewVersion?.Invoke(Context);
-        //        //}
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Context.OnUpdateException?.Invoke(ex);
-        //    }
-        //}
-
         /// <summary>
         /// 开始更新
         /// </summary>
@@ -76,29 +55,25 @@ namespace AttnSoft.AutoUpdate
                 Context.OnUpdateException?.Invoke(ex);
             }
         }
-
-        ///// <summary>
-        ///// 取消更新
-        ///// </summary>
-        //public void CancelUpdate()
-        //{
-        //    //Context.CancelToken.Cancel();
-        //    //OnUpdateCanceled?.Invoke();
-        //}
         /// <summary>
         /// 查找versions 中最大Version 且 RequiredMinVersion 小于 clientVersion
         /// </summary>
         /// <param name="versions"></param>
         /// <param name="clientVersion"></param>
         /// <returns></returns>
-        public static VersionInfo? GetUpdateVersion(List<VersionInfo> versions, Version clientVersion)
+        public static VersionInfo? GetUpdateVersion(List<VersionInfo> versions, UpdateContext context)
         {
+            Version clientVersion = context.ClientVersion;
+            Version? skipVersion= context.LocalVerManager.GetVersionInfo()?.SkipVersion;
+
             var listVers = versions.OrderByDescending(x => x.Version).ToList();
             foreach (var verinfo in listVers)
             {
                 if (verinfo.Version > clientVersion)
                 {
-                    if (!string.IsNullOrEmpty(verinfo.RequiredMinVersion) && (clientVersion < new Version(verinfo.RequiredMinVersion)))
+                    if (!string.IsNullOrEmpty(verinfo.RequiredMinVersion) 
+                        && (clientVersion < new Version(verinfo.RequiredMinVersion))
+                        && (skipVersion != null && skipVersion == verinfo.Version))
                     {
                         continue;
                     }

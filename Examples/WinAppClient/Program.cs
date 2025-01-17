@@ -1,8 +1,7 @@
 
 using AttnSoft.AutoUpdate;
 using System.Runtime.InteropServices;
-using System.Text.Json;
-using System.Text;
+
 
 namespace WinAppClient
 {

@@ -36,7 +36,10 @@ internal class UpgradApp
         newfilename = Path.Combine(sourcePath, newfilename);
         var localfilename = "Version.json";
         localfilename = Path.Combine(sourcePath, localfilename);
-        File.Move(newfilename, localfilename, true);
+
+        File.Delete(localfilename);
+        File.Move(newfilename, localfilename);
+        
         StartApp();
     }
     protected static void Clear(string path)
@@ -57,6 +60,8 @@ internal class UpgradApp
                 Arguments= "AttnSoft.AutoUpdate.Successful"
             };
             Process.Start(processStartInfo);
+
+            Clear(Context.BackupPath);
         }
         finally
         {

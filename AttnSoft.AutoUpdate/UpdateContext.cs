@@ -1,24 +1,18 @@
-﻿using AttnSoft.AutoUpdate.Middlewares;
-using GeneralUpdate.Common.JsonContext;
-using Microsoft.Extensions.DependencyInjection;
+﻿using AttnSoft.AutoUpdate.Common;
+using AttnSoft.AutoUpdate.Middlewares;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Text.Json;
 using System.Threading.Tasks;
+
+#if !NETFRAMEWORK
+using Microsoft.Extensions.DependencyInjection;
+#endif
 
 namespace AttnSoft.AutoUpdate
 {
-    ///// <summary>
-    ///// 表示可以处理应用请求的委托
-    ///// </summary>
-    ///// <typeparam name="TContext">中间件上下文类型</typeparam>
-    ///// <param name="context">中间件上下文</param>
-    ///// <returns></returns>
-    //public delegate Task ApplicationDelegate<TContext>(TContext context);
-
     public class UpdateContext
     {
 
@@ -28,8 +22,6 @@ namespace AttnSoft.AutoUpdate
         /// </summary>
         public Func<ApplicationDelegate<UpdateContext>, UpdateContext,Task>? OnFindNewVersion;
 
-        //触发下载取消事件
-        //public event Action? OnDownloadCanceled;
         //触发下载完成事件
         public Action? OnDownloadCompleted;
         //触发下载失败事件
@@ -42,7 +34,7 @@ namespace AttnSoft.AutoUpdate
         //触发更新完成事件
         public Action<UpdateContext>? OnUpdateCompleted;
 
-        public IServiceCollection Services { get; } = new ServiceCollection();
+        public ApplicationServiceCollection Services { get; } = new ApplicationServiceCollection();
         public IServiceProvider CreateServiceProvider()
         {
             return Services.BuildServiceProvider();
@@ -98,23 +90,15 @@ namespace AttnSoft.AutoUpdate
             {
                 if (clientVer == null)
                 {
-                    var filename = "Version.json";
-                    filename = Path.Combine(AppPath, filename);
-                    string jsonString = string.Empty;
-                    if (File.Exists(filename))
+                    var localVer = LocalVerManager.GetVersionInfo();
+                    if (localVer!=null && localVer.Version!=null)
                     {
-                        jsonString = File.ReadAllText(filename);
-                        var localVer = JsonSerializer.Deserialize<VersionInfo>(jsonString, VersionInfoJsonContext.Default.VersionInfo);
-                        if (localVer != null)
-                        {
-                            clientVer = localVer.Version;
-                        }
+                        clientVer = localVer.Version;
                     }
                     else
                     {
                         clientVer = Assembly.GetEntryAssembly().GetName().Version;
                     }
-
                 }
                 return clientVer;
             }
@@ -122,6 +106,32 @@ namespace AttnSoft.AutoUpdate
             {
                 clientVer = value;
             }
+        }
+        LocalVerManager _LocalVerManager;
+        public LocalVerManager LocalVerManager
+        {
+            get
+            {
+                if (_LocalVerManager == null)
+                {
+                    _LocalVerManager = new LocalVerManager(AppPath);
+                }
+                return _LocalVerManager;
+            }
+        }
+        /// <summary>
+        /// 跳过当前版本
+        /// </summary>
+        public void SkipVersion()
+        {
+            var localVer = LocalVerManager.GetVersionInfo();
+            if (localVer == null)
+            {
+                localVer = new VersionInfo();
+                localVer.Version = ClientVersion;
+            }
+            localVer.SkipVersion = UpdateVersion.Version;
+            LocalVerManager.SaveVersionInfo(localVer);
         }
         /// <summary>
         /// The main program update version.

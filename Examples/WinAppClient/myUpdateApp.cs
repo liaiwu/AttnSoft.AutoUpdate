@@ -26,8 +26,9 @@ namespace WinAppClient
                 //};
                 var context = UpContext;
                 context.UpdateUrl = "http://update.attnsoft.com/demo/v1/version.json";
+                //context.UpdateUrl = "http://127.0.0.1:5000/Verification";
                 //使用用WebApi方式获取服务器版本信息
-                //context.UseWebApiGetVersionInfo();
+                //context.UseWebApi();
                 //如果不指定使用WebApi方式,内部默认使用OSS方式
 
                 context.OnUpdateException = (ex) =>

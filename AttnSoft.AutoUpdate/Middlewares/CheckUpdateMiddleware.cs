@@ -28,7 +28,7 @@ public class CheckUpdateMiddleware : ICheckUpdate
             context.OnUpdateException?.Invoke(new Exception("Failed to retrieve version information from server!"));
             return;
         }
-        var updatVerInfo = UpdateApp.GetUpdateVersion(verInfos, context.ClientVersion);
+        var updatVerInfo = UpdateApp.GetUpdateVersion(verInfos, context);
         if (updatVerInfo == null)
         {
             Console.WriteLine("Version is newer, no update required!");

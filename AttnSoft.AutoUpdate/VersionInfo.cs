@@ -1,42 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
+
 
 namespace AttnSoft.AutoUpdate;
 
 public class VersionInfo
 {
-    [JsonPropertyName("recordId")]
+    //[JsonPropertyName("recordId")]
     public int RecordId { get; set; } = 0;
 
-    [JsonPropertyName("version")]
+    //[JsonPropertyName("version")]
     public Version? Version { get; set; }
 
-    [JsonPropertyName("releaseDate")]
+    //[JsonPropertyName("releaseDate")]
     public DateTime? ReleaseDate { get; set; }
 
-    [JsonPropertyName("url")]
+    //[JsonPropertyName("url")]
     public string Url { get; set; }
 
-    [JsonPropertyName("hash")]
+    //[JsonPropertyName("hash")]
     public string? Hash { get; set; }
 
     /// <summary>
     /// 更新后启动主程序的命令
     /// </summary>
-    [JsonPropertyName("startAppCmd")]
+    //[JsonPropertyName("startAppCmd")]
     public string? StartAppCmd { get; set; }
 
     /// <summary>
     /// 升级需要的最低版本
     /// </summary>
-    [JsonPropertyName("requiredMinVersion")]
+    //[JsonPropertyName("requiredMinVersion")]
     public string ? RequiredMinVersion { get; set; }
 
     /// <summary>
     /// 是否强制更新
     /// </summary>
-    [JsonPropertyName("isForcibly")]
+    //[JsonPropertyName("isForcibly")]
     public bool IsForcibly { get; set; }
 
     //[JsonPropertyName("packageSize")]
@@ -45,32 +45,23 @@ public class VersionInfo
     /// <summary>
     /// 更新描述
     /// </summary>
-    [JsonPropertyName("desc")]
+    //[JsonPropertyName("desc")]
     public string? Desc { get; set; }
     /// <summary>
     /// 更新日志地址
     /// </summary>
-    [JsonPropertyName("updateLogUrl")]
+    //[JsonPropertyName("updateLogUrl")]
     public string UpdateLogUrl { get; set; }
 
-    [JsonPropertyName("blackFileFormats")]
+    //[JsonPropertyName("blackFileFormats")]
     public List<string> BlackFormats { get; set; }=new List<string>();
 
-    [JsonPropertyName("blackFiles")]
+    //[JsonPropertyName("blackFiles")]
     public List<string> BlackFiles { get; set; }= new List<string>();
 
-    [JsonPropertyName("skipDirectorys")]
+    //[JsonPropertyName("skipDirectorys")]
     public List<string>? SkipDirectorys { get; set; } = new List<string>();
-
-    //[XmlElement("productId")]
-    //[JsonPropertyName("productId")]
-    //public string? ProductId { get; set; }
-
-    //[XmlElement("platform", typeof(int))]
-    //[JsonPropertyName("platform")]
-    //public int Platform { get; set; } = 0;
-
-    //[JsonPropertyName("appType")]
-    //public int? AppType { get; set; }
+    //跳过的版本
+    public Version? SkipVersion { get; set; }
 
 }
