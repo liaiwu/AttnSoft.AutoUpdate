@@ -72,8 +72,11 @@ namespace AttnSoft.AutoUpdate
                 if (verinfo.Version > clientVersion)
                 {
                     if (!string.IsNullOrEmpty(verinfo.RequiredMinVersion) 
-                        && (clientVersion < new Version(verinfo.RequiredMinVersion))
-                        && (skipVersion != null && skipVersion == verinfo.Version))
+                        && (clientVersion < new Version(verinfo.RequiredMinVersion)))
+                    {
+                        continue;
+                    }
+                    if ((skipVersion != null && skipVersion == verinfo.Version))
                     {
                         continue;
                     }

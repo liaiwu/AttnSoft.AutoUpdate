@@ -2,17 +2,17 @@
 
 	<PropertyGroup>
 		<!--<TargetFramework>netstandard2.0</TargetFramework>-->
-		<TargetFrameworks>net461;netstandard2.0;net6.0;net8.0;net9.0</TargetFrameworks>
-		<Version>2.0.0</Version>
+		<TargetFrameworks>net461;netstandard2.0;net6.0</TargetFrameworks>
+		<Version>3.2.0</Version>
 		<Nullable>enable</Nullable>
 		<LangVersion>default</LangVersion>
 		<Authors>LAW</Authors>
 		<ApplicationIcon>AttnSoft.Update.ico</ApplicationIcon>
-		<Description>A lightweight cross-platform application automatic upgrade component.</Description>
+		<Description>A lightweight, easy-to-use, cross-platform application for automatically updating components.一款轻量级、易于使用、跨平台的应用程序自动升级组件</Description>
 		<SignAssembly>False</SignAssembly>
 		<RepositoryUrl>https://github.com/liaiwu/AttnSoft.AutoUpdate.git</RepositoryUrl>
 		<Copyright>Copyright © 2025 LAW. All rights reserved.</Copyright>
-		<PackageReleaseNotes>A lightweight cross-platform application automatic upgrade component.</PackageReleaseNotes>
+		<PackageReleaseNotes>A lightweight, easy-to-use, cross-platform application for automatically updating components.一款轻量级、易于使用、跨平台的应用程序自动升级组件</PackageReleaseNotes>
 		<PackageProjectUrl>https://github.com/liaiwu/AttnSoft.AutoUpdate</PackageProjectUrl>
 		<Title>AttnSoft.AutoUpdate</Title>
 		<PackageLicenseUrl>https://github.com/liaiwu/AttnSoft.AutoUpdate?tab=MIT-1-ov-file</PackageLicenseUrl>
@@ -52,7 +52,7 @@
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETFramework'">
 		<EmbeddedResource Include="Upgrade\AOT\Upgrade.exe" />
 	</ItemGroup>
-	
+
 	<!--<ItemGroup Condition="$(RuntimeIdentifier.StartsWith('win')) and '$(TargetFrameworkIdentifier)' != '.NETFramework'">
 		<EmbeddedResource Include="Upgrade\AOT\Upgrade.exe" />
 	</ItemGroup>-->
@@ -65,8 +65,6 @@
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<!--<PackageReference Include="System.Net.Http" Version="4.3.4" />
-		<PackageReference Include="System.Net.Requests" Version="4.3.0" />-->
 		<Reference Include="System.IO.Compression" />
 	</ItemGroup>
 

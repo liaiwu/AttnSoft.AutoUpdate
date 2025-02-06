@@ -39,6 +39,11 @@ public class VersionInfo
     //[JsonPropertyName("isForcibly")]
     public bool IsForcibly { get; set; }
 
+    /// <summary>
+    /// 是否可以跳过
+    /// </summary>
+    public bool CanSkip { get; set; }
+
     //[JsonPropertyName("packageSize")]
     //public long PackageSize { get; set; } = 0;
 
