@@ -25,12 +25,16 @@
 
 	<ItemGroup>
 	  <Content Include="AttnSoft.Update.ico" />
-	  <Content Include="Upgrade.exe">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
 	  <Content Include="Version.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="AttnSoft.Update.png">
+	    <PackagePath>\</PackagePath>
+	    <Pack>True</Pack>
+	  </EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>

@@ -44,7 +44,7 @@ namespace WinAppClient
             //因为这里是手动检查升级
             if (CheckCompletionMiddleware.CheckIsCompletion())
             {
-                MessageBox.Show("升级完成!");
+                MessageBox.Show("升级完成!","提示", MessageBoxButtons.OK,  MessageBoxIcon.Information);
             }
         }
 

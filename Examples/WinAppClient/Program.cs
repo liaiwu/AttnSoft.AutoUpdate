@@ -17,7 +17,7 @@ namespace WinAppClient
         [STAThread]
         static async Task Main(string[] args)
         {
-            SetProcessDPIAware();
+
             //启动后自动启动升级
             //UpdateContext? context = new UpdateContext()
             //{
@@ -38,6 +38,7 @@ namespace WinAppClient
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
 #else
+            SetProcessDPIAware();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 #endif
