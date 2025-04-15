@@ -31,7 +31,7 @@ public class CheckUpdateMiddleware : ICheckUpdate
         var updatVerInfo = UpdateApp.GetUpdateVersion(verInfos, context);
         if (updatVerInfo == null)
         {
-            Console.WriteLine("Version is newer, no update required!");
+            Console.WriteLine("No update required!");
             return;
         }
         context.IsMainUpdate = true;

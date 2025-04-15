@@ -30,6 +30,10 @@ namespace AttnSoft.AutoUpdate
         public Action<long, int>? OnDownloadProgressChanged;
         //触发更新异常事件
         public Action<Exception>? OnUpdateException;
+        /// <summary>
+        /// 执行安装前事件()
+        /// </summary>
+        public Action<UpdateContext>? OnBeforeInstall;
 
         //触发更新完成事件
         public Action<UpdateContext>? OnUpdateCompleted;

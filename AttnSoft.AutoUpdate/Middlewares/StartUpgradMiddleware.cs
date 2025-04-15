@@ -16,7 +16,11 @@ public interface IStartUpgrad : IApplicationMiddleware<UpdateContext> { }
 /// </summary>
 public class StartUpgradMiddleware : IStartUpgrad
 {
-    public async Task InvokeAsync(ApplicationDelegate<UpdateContext> next, UpdateContext context)
+    /// <summary>
+    /// 重启应用程序安装新版本
+    /// </summary>
+    /// <param name="context"></param>
+    public static void ExeUpdateAsync(UpdateContext context)
     {
         try
         {
@@ -32,7 +36,6 @@ public class StartUpgradMiddleware : IStartUpgrad
             {
                 context.UpdateVersion.StartAppCmd = context.StartAppCmd;
             }
-            //var ProcessInfo = JsonSerializer.Serialize(context.UpdateVersion, VersionInfoJsonContext.Default.VersionInfo);
             var ProcessInfo = DefaultJsonConvert.JsonConvert.Serialize(context.UpdateVersion);
             File.WriteAllText(ProcessInfoFileName, ProcessInfo);
 
@@ -48,23 +51,39 @@ public class StartUpgradMiddleware : IStartUpgrad
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = appPath,
-                UseShellExecute = true
+                UseShellExecute = true,
+#if !DEBUG
+                WindowStyle = ProcessWindowStyle.Hidden, // 隐藏启动窗口
+                CreateNoWindow = true // 不创建新窗口
+#endif
             };
             processStartInfo.Arguments = Utils.BuildArguments(arguments);
+
             Process.Start(processStartInfo);
+            Process.GetCurrentProcess().Kill();
+
             string path = context.TempPath;
             if (Directory.Exists(path))
                 StorageManager.DeleteDirectory(path);
-            await next(context);
+            //await next(context);
         }
         catch (Exception ex)
         {
             context.OnUpdateException?.Invoke(ex);
         }
-        finally
+    }
+
+    public async Task InvokeAsync(ApplicationDelegate<UpdateContext> next, UpdateContext context)
+    {
+        if (context.OnBeforeInstall != null)
         {
-            Process.GetCurrentProcess().Kill();
+            context.OnBeforeInstall.Invoke(context);
         }
+        else
+        {
+            ExeUpdateAsync(context);
+        }
+        await next(context);
     }
 
 }

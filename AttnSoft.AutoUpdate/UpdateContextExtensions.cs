@@ -18,7 +18,7 @@ public static partial class UpdateContextExtensions
         context.OnGetUpdateVersionInfo = GetVersionInfoFromOss;
         return context;
     }
-    internal async static Task<List<VersionInfo>?> GetVersionInfoFromOss(UpdateContext context)
+    public async static Task<List<VersionInfo>?> GetVersionInfoFromOss(UpdateContext context)
     {
 #if !NETFRAMEWORK
         using var httpClient = new HttpClient(new HttpClientHandler
@@ -33,16 +33,24 @@ public static partial class UpdateContextExtensions
             return DefaultJsonConvert.JsonConvert.Deserialize<List<VersionInfo>>(responseJsonStr);
         }
 #else
-        using (WebClient client = new WebClient())
+        try
         {
-            var data= await client.DownloadDataTaskAsync(new Uri(context.UpdateUrl));
-            if (data != null && data.Length > 0)
+            using (WebClient client = new WebClient())
             {
-                string responseJsonStr = Encoding.UTF8.GetString(data);
-                return DefaultJsonConvert.JsonConvert.Deserialize<List<VersionInfo>>(responseJsonStr);
+                var data = await client.DownloadDataTaskAsync(new Uri(context.UpdateUrl));
+                if (data != null && data.Length > 0)
+                {
+                    string responseJsonStr = Encoding.UTF8.GetString(data);
+                    return DefaultJsonConvert.JsonConvert.Deserialize<List<VersionInfo>>(responseJsonStr);
+                }
             }
         }
-        return new List<VersionInfo>();
+        catch (Exception ex)
+        {
+            context.OnUpdateException?.Invoke(ex);
+            return null;
+        }
+        return null;
 #endif
 
     }
@@ -56,7 +64,7 @@ public static partial class UpdateContextExtensions
         context.OnGetUpdateVersionInfo = GetVersionInfoFroWebApi;
         return context;
     }
-    internal static async Task<List<VersionInfo>?> GetVersionInfoFroWebApi(UpdateContext context)
+    public static async Task<List<VersionInfo>?> GetVersionInfoFroWebApi(UpdateContext context)
     {
 #if !NETFRAMEWORK
         var uri = new Uri(context.UpdateUrl);
@@ -80,18 +88,26 @@ public static partial class UpdateContextExtensions
         //string responseJsonStr = "";
         return DefaultJsonConvert.JsonConvert.Deserialize<List<VersionInfo>>(responseJsonStr);
 #else
-        using (WebClient client = new WebClient())
+        try
         {
-            client.Headers[HttpRequestHeader.ContentType] = "application/json";
-            string postData = $"{{\"Version\": \"{context.ClientVersion}\", \"AppKey\": \"{context.AppSecretKey}\"}}";
-            var data = await client.UploadDataTaskAsync(new Uri(context.UpdateUrl), "POST", Encoding.UTF8.GetBytes(postData));
-            if (data != null && data.Length > 0)
+            using (WebClient client = new WebClient())
             {
-                string responseJsonStr = Encoding.UTF8.GetString(data);
-                return DefaultJsonConvert.JsonConvert.Deserialize<List<VersionInfo>>(responseJsonStr);
+                client.Headers[HttpRequestHeader.ContentType] = "application/json";
+                string postData = $"{{\"Version\": \"{context.ClientVersion}\", \"AppKey\": \"{context.AppSecretKey}\"}}";
+                var data = await client.UploadDataTaskAsync(new Uri(context.UpdateUrl), "POST", Encoding.UTF8.GetBytes(postData));
+                if (data != null && data.Length > 0)
+                {
+                    string responseJsonStr = Encoding.UTF8.GetString(data);
+                    return DefaultJsonConvert.JsonConvert.Deserialize<List<VersionInfo>>(responseJsonStr);
+                }
             }
         }
-        return new List<VersionInfo>();
+        catch (Exception ex)
+        {
+            context.OnUpdateException?.Invoke(ex);
+            return null;
+        }
+        return null;
 #endif
     }
 

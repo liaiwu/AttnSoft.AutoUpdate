@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net461</TargetFramework>
+		<TargetFrameworks>net461;</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<InvariantGlobalization>true</InvariantGlobalization>
 		<AssemblyName>Upgrade</AssemblyName>
@@ -44,5 +44,8 @@
 	
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETStandard'">
+		<PackageReference Include="System.Text.Json" Version="9.0.0" />
 	</ItemGroup>
 </Project>

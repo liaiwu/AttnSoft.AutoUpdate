@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<!--<TargetFramework>netstandard2.0</TargetFramework>-->
-		<TargetFrameworks>net461;netstandard2.0;net6.0</TargetFrameworks>
-		<Version>3.2.0</Version>
+		<TargetFrameworks>net461;netstandard2.0;net6.0;net6.0-windows</TargetFrameworks>
+		<Version>3.3.0</Version>
 		<Nullable>enable</Nullable>
 		<LangVersion>default</LangVersion>
 		<Authors>LAW</Authors>
@@ -22,6 +22,10 @@
 		<PackageIcon>AttnSoft.Update.png</PackageIcon>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == 'net6.0-windows'">
+		<UseWindowsForms>true</UseWindowsForms>
+	</PropertyGroup>
+
 	<ItemGroup>
 	  <Compile Remove="Common\JsonContext\**" />
 	  <Compile Remove="Common\Object\**" />
@@ -35,9 +39,16 @@
 	  <Compile Remove="Common\HashAlgorithms\Md5HashAlgorithm.cs" />
 	  <Compile Remove="Common\HashAlgorithms\Sha1HashAlgorithm.cs" />
 	  <Compile Remove="LoggerFactory.cs" />
+	  <Compile Remove="UI\WinForm\FmUpdate.cs" />
+	  <Compile Remove="UI\WinForm\FmUpdate.Designer.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <EmbeddedResource Remove="UI\WinForm\FmUpdate.resx" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="AttnSoft.Update.png" />
 	  <None Remove="Upgrade\AOT\Upgrade.exe" />
 	  <None Remove="Upgrade\Framework\Upgrade.exe" />
 	</ItemGroup>
@@ -51,6 +62,12 @@
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETFramework'">
 		<EmbeddedResource Include="Upgrade\AOT\Upgrade.exe" />
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Include="AttnSoft.Update.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </EmbeddedResource>
 	</ItemGroup>
 
 	<!--<ItemGroup Condition="$(RuntimeIdentifier.StartsWith('win')) and '$(TargetFrameworkIdentifier)' != '.NETFramework'">
@@ -76,10 +93,7 @@
 		<PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
 	</ItemGroup>
 	<ItemGroup>
-		<None Update="AttnSoft.Update.png">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
+	  <Folder Include="UI\WinForm\" />
 	</ItemGroup>
 	
 </Project>
