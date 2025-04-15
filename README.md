@@ -1,6 +1,7 @@
-# AttnSoft.AutoUpdate
+# ![Alt text](AttnSoft.AutoUpdate/AttnSoft.Update.ico "AttnSoft.AutoUpdate")AttnSoft.AutoUpdate
 
-AttnSoft.AutoUpdate 是一款轻量级跨平台应用程序自动升级组件。
+
+AttnSoft.AutoUpdate 是一款轻量级、易于使用、跨平台的应用程序自动升级组件。
 
 ## 快速开始
 
