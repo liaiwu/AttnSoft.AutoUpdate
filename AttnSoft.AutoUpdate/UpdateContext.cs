@@ -1,11 +1,12 @@
 ﻿using AttnSoft.AutoUpdate.Common;
 using AttnSoft.AutoUpdate.Middlewares;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using AttnSoft.AutoUpdate.JsonContext;
+
 
 #if !NETFRAMEWORK
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +17,7 @@ namespace AttnSoft.AutoUpdate
     public class UpdateContext
     {
 
-        public Func<UpdateContext, Task<List<VersionInfo>?>>? OnGetUpdateVersionInfo;
+        public Func<UpdateContext, Task<VersionInfoList?>>? OnGetUpdateVersionInfo;
         /// <summary>
         /// 发现新版本事件
         /// </summary>

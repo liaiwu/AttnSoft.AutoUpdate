@@ -1,8 +1,10 @@
 ﻿using AttnSoft.AutoUpdate;
 using AttnSoft.AutoUpdate.Common;
+using AttnSoft.AutoUpdate.JsonContext;
 using GeneralUpdate.Common.FileBasic;
 using GeneralUpdate.Common.JsonContext;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace AttnSoft.Upgrad;
@@ -64,17 +66,17 @@ public class UpgradContext
 #endif
         if (UpdateVersion != null)
         {
-            if(UpdateVersion.BlackFiles!= null && UpdateVersion.BlackFiles.Count > 0)
+            if(UpdateVersion.BlackFiles!= null && UpdateVersion.BlackFiles.Length > 0)
             {
-                BlackListManager.Instance.AddBlackFiles(UpdateVersion.BlackFiles);
+                BlackListManager.Instance.AddBlackFiles(new List<string>(UpdateVersion.BlackFiles));
             }
-            if (UpdateVersion.BlackFormats != null && UpdateVersion.BlackFormats.Count > 0)
+            if (UpdateVersion.BlackFormats != null && UpdateVersion.BlackFormats.Length > 0)
             {
-                BlackListManager.Instance.AddBlackFileFormats(UpdateVersion.BlackFormats);
+                BlackListManager.Instance.AddBlackFileFormats(new List<string>(UpdateVersion.BlackFormats));
             }
-            if (UpdateVersion.SkipDirectorys != null && UpdateVersion.SkipDirectorys.Count > 0)
+            if (UpdateVersion.SkipDirectorys != null && UpdateVersion.SkipDirectorys.Length > 0)
             {
-                BlackListManager.Instance.AddSkipDirectorys(UpdateVersion.SkipDirectorys);
+                BlackListManager.Instance.AddSkipDirectorys(new List<string>(UpdateVersion.SkipDirectorys));
             }
         }
 

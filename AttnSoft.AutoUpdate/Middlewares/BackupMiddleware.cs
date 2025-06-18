@@ -1,4 +1,5 @@
 ﻿using GeneralUpdate.Common.FileBasic;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -16,8 +17,11 @@ public class BackupMiddleware : IBackup
     {
         context.BackupPath = Path.Combine(context.AppPath,
             $"{StorageManager.DirectoryName}{context.ClientVersion}");
-
-        BlackListManager.Instance.AddSkipDirectorys(context.UpdateVersion.SkipDirectorys);
+        if (null != context.UpdateVersion.SkipDirectorys)
+        {
+            BlackListManager.Instance.AddSkipDirectorys(new List<string>(context.UpdateVersion.SkipDirectorys));
+        }
+     
         //BlackListManager.Instance.AddBlackFileFormats(context.UpdateVersion.BlackFormats);
         //BlackListManager.Instance.AddBlackFiles(context.UpdateVersion.BlackFiles);
         StorageManager.Backup(context.AppPath, context.BackupPath, BlackListManager.Instance.SkipDirectorys);

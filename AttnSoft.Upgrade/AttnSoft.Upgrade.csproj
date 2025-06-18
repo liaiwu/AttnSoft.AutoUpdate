@@ -34,6 +34,7 @@
 		<Compile Include="..\AttnSoft.AutoUpdate\Common\HashAlgorithms\Sha256HashAlgorithm.cs" Link="HashAlgorithms\Sha256HashAlgorithm.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\Common\JsonConvert\DefaultJsonConvert.cs" Link="JsonConvert\DefaultJsonConvert.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\Common\JsonConvert\IJsonConvert.cs" Link="JsonConvert\IJsonConvert.cs" />
+		<Compile Include="..\AttnSoft.AutoUpdate\JsonContent\VersionInfoJsonContext.cs" Link="Objects\VersionInfoJsonContext.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\VersionInfo.cs" Link="Objects\VersionInfo.cs" />
 
 	</ItemGroup>

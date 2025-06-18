@@ -1,10 +1,12 @@
-﻿using AttnSoft.AutoUpdate.Common;
-using System;
-using System.Collections.Generic;
-using System.Net;
+﻿
+using AttnSoft.AutoUpdate.Common;
+using AttnSoft.AutoUpdate.JsonContext;
 
+using System;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+
 
 #if !NETFRAMEWORK
 using System.Net.Http;
@@ -18,7 +20,7 @@ public static partial class UpdateContextExtensions
         context.OnGetUpdateVersionInfo = GetVersionInfoFromOss;
         return context;
     }
-    public async static Task<List<VersionInfo>?> GetVersionInfoFromOss(UpdateContext context)
+    public async static Task<VersionInfoList?> GetVersionInfoFromOss(UpdateContext context)
     {
 #if !NETFRAMEWORK
         using var httpClient = new HttpClient(new HttpClientHandler
@@ -30,7 +32,7 @@ public static partial class UpdateContextExtensions
         {
             response.EnsureSuccessStatusCode();
             string responseJsonStr = await response.Content.ReadAsStringAsync();
-            return DefaultJsonConvert.JsonConvert.Deserialize<List<VersionInfo>>(responseJsonStr);
+            return DefaultJsonConvert.JsonConvert.Deserialize<VersionInfoList>(responseJsonStr, VersionRespJsonContext.Default.VersionInfoList);
         }
 #else
         try
@@ -41,7 +43,7 @@ public static partial class UpdateContextExtensions
                 if (data != null && data.Length > 0)
                 {
                     string responseJsonStr = Encoding.UTF8.GetString(data);
-                    return DefaultJsonConvert.JsonConvert.Deserialize<List<VersionInfo>>(responseJsonStr);
+                    return DefaultJsonConvert.JsonConvert.Deserialize<VersionInfoList>(responseJsonStr);
                 }
             }
         }
@@ -64,7 +66,7 @@ public static partial class UpdateContextExtensions
         context.OnGetUpdateVersionInfo = GetVersionInfoFroWebApi;
         return context;
     }
-    public static async Task<List<VersionInfo>?> GetVersionInfoFroWebApi(UpdateContext context)
+    public static async Task<VersionInfoList?> GetVersionInfoFroWebApi(UpdateContext context)
     {
 #if !NETFRAMEWORK
         var uri = new Uri(context.UpdateUrl);
@@ -85,8 +87,9 @@ public static partial class UpdateContextExtensions
         var stringContent = new StringContent(postData, Encoding.UTF8, "application/json");
         var result = await httpClient.PostAsync(uri, stringContent);
         var responseJsonStr = await result.Content.ReadAsStringAsync();
-        //string responseJsonStr = "";
-        return DefaultJsonConvert.JsonConvert.Deserialize<List<VersionInfo>>(responseJsonStr);
+        Console.WriteLine("从WebApi获得Json:"+ responseJsonStr);
+
+        return DefaultJsonConvert.JsonConvert.Deserialize<VersionInfoList>(responseJsonStr, VersionRespJsonContext.Default.VersionInfoList);
 #else
         try
         {
@@ -98,7 +101,8 @@ public static partial class UpdateContextExtensions
                 if (data != null && data.Length > 0)
                 {
                     string responseJsonStr = Encoding.UTF8.GetString(data);
-                    return DefaultJsonConvert.JsonConvert.Deserialize<List<VersionInfo>>(responseJsonStr);
+                    Console.WriteLine("从WebApi获得Json:"+ responseJsonStr);
+                    return DefaultJsonConvert.JsonConvert.Deserialize<VersionInfoList>(responseJsonStr);
                 }
             }
         }

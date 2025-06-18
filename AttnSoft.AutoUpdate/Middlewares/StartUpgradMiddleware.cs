@@ -1,4 +1,5 @@
 ﻿using AttnSoft.AutoUpdate.Common;
+using AttnSoft.AutoUpdate.JsonContext;
 using GeneralUpdate.Common.FileBasic;
 using System;
 using System.Collections.ObjectModel;
@@ -36,7 +37,11 @@ public class StartUpgradMiddleware : IStartUpgrad
             {
                 context.UpdateVersion.StartAppCmd = context.StartAppCmd;
             }
+#if NETFRAMEWORK
             var ProcessInfo = DefaultJsonConvert.JsonConvert.Serialize(context.UpdateVersion);
+#else
+            var ProcessInfo = DefaultJsonConvert.JsonConvert.Serialize(context.UpdateVersion, VersionInfoJsonContext.Default.VersionInfo);
+#endif
             File.WriteAllText(ProcessInfoFileName, ProcessInfo);
 
             var arguments = new Collection<string>

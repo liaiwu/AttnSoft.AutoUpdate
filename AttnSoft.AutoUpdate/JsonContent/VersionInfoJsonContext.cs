@@ -1,5 +1,5 @@
 ﻿using AttnSoft.AutoUpdate;
-namespace GeneralUpdate.Common.JsonContext;
+namespace AttnSoft.AutoUpdate.JsonContext;
 
 #if !NETFRAMEWORK
 using System.Text.Json.Serialization;

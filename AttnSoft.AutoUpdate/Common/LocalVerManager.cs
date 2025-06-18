@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AttnSoft.AutoUpdate.JsonContext;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,7 +28,11 @@ namespace AttnSoft.AutoUpdate.Common
                     if (File.Exists(filename))
                     {
                         jsonString = File.ReadAllText(filename);
+#if NETFRAMEWORK
                         versionInfo = DefaultJsonConvert.JsonConvert.Deserialize<VersionInfo>(jsonString);
+#else
+                        versionInfo = DefaultJsonConvert.JsonConvert.Deserialize<VersionInfo>(jsonString, VersionInfoJsonContext.Default.VersionInfo);
+#endif
                     }
                 }
             }
@@ -36,7 +41,11 @@ namespace AttnSoft.AutoUpdate.Common
         public void SaveVersionInfo(VersionInfo versionInfo)
         {
             string fileFullName = Path.Combine(AppPath, filename);
+#if NETFRAMEWORK
             string jsonString = DefaultJsonConvert.JsonConvert.Serialize(versionInfo);
+#else
+            string jsonString = DefaultJsonConvert.JsonConvert.Serialize(versionInfo, VersionInfoJsonContext.Default.VersionInfo);
+#endif
             File.WriteAllText(fileFullName, jsonString);
         }
 
