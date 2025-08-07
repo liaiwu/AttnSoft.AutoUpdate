@@ -111,6 +111,10 @@ git clone https://github.com/liaiwu/AttnSoft.AutoUpdate.git
 | .NET Core 2.0 、3.1        | 支持     |
 | .NET 5  to last version   | 支持     |
 
+### 开源链接
+Github: https://github.com/liaiwu/AttnSoft.AutoUpdate.git
+
+Gitee:  https://gitee.com/attnsoft/AttnSoft.AutoUpdate.git
 
 ## 感谢
 
