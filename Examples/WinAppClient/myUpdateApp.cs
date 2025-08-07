@@ -39,16 +39,12 @@ namespace WinAppClient
                 { 
                     Console.WriteLine("The upgrade package has been downloaded successfully.");
                     fmUpdate.DownloadComplet();
-                    //MethodInvoker deleg = delegate { fmUpdate.DownloadComplet(); };
-                    //fmUpdate.Invoke(deleg);
                 };
 
                 context.OnDownloadProgressChanged = (long arg1, int value) => 
                 { 
                     Console.WriteLine($"Current download : Total size:{arg1}, Progress percentage:{value}%");
                     fmUpdate.ChangProgress(value);
-                    //MethodInvoker deleg = delegate { fmUpdate.ChangProgress(value); };
-                    //fmUpdate.Invoke(deleg);
                 };
 
                 await UpdateApp.CreateBuilder(context).StartUpdateAsync();

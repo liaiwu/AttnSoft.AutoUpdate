@@ -97,6 +97,12 @@ git clone https://github.com/liaiwu/AttnSoft.AutoUpdate.git
 如果补丁包很大的话,可以采用差异更新方式制作补丁包以减少补丁包的大小。
 可以使用GeneralUpdate提供的[工具包](https://github.com/GeneralLibrary/GeneralUpdate.Tools.git)制作。
 
+### WinAppClient运行示例
+![Alt text](demo.gif "Demo")
+
+此示例演示了winform下程序升级过程。
+
+
 ## 支持框架
 
 | .NET框架名称               | 是否支持 |
