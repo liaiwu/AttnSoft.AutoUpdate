@@ -26,6 +26,10 @@ public record VerificationResultDTO
     /// 下载地址
     /// </summary>
     public string? Url { get; set; }
+    /// <summary>
+    /// 升级成功后启动的程序名称(通常就是主程序名称)
+    /// </summary>
+    public string StartAppCmd { get; set; }
 
     /// <summary>
     /// 版本号

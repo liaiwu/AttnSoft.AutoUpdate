@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<!--<TargetFramework>netstandard2.0</TargetFramework>-->
-		<TargetFrameworks>net461;netstandard2.0;net6.0;net6.0-windows</TargetFrameworks>
-		<Version>3.3.3</Version>
+		<TargetFrameworks>net461;netstandard2.0;net6.0;net6.0-windows;net10.0</TargetFrameworks>
+		<Version>3.3.4</Version>
 		<Nullable>enable</Nullable>
 		<LangVersion>default</LangVersion>
 		<Authors>LAW</Authors>

@@ -34,6 +34,7 @@ app.MapPost("/Verification", (VerifyDTO request) =>
             Version = "1.0.2.1",
             IsForcibly = false,
             Size = packet.Length,
+            StartAppCmd="WinAppClient.exe"
         }
     };
     var options = new JsonSerializerOptions
