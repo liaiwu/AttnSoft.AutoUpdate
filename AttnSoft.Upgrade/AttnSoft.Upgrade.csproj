@@ -2,17 +2,17 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFrameworks>net461;</TargetFrameworks>
+		<!--<TargetFrameworks>net461;</TargetFrameworks>-->
 		<Nullable>enable</Nullable>
 		<InvariantGlobalization>true</InvariantGlobalization>
 		<AssemblyName>Upgrade</AssemblyName>
 		<LangVersion>default</LangVersion>
 	</PropertyGroup>
 
-	<!--<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
 		<PublishAot>true</PublishAot>
-	</PropertyGroup>-->
+	</PropertyGroup>
 
 	<ItemGroup>
 		<Compile Remove="Properties\**" />

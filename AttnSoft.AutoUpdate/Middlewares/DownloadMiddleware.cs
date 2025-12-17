@@ -19,6 +19,8 @@ public class DownloadMiddleware : IDownload
         string PackageName = Path.GetFileName(url);
 
         context.TempPath = StorageManager.GetTempDirectory("main_temp");
+        
+        System.Console.WriteLine($"TempPath:{context.TempPath}");
 
         var fileFullName = Path.Combine(context.TempPath, PackageName);
         context.ZipFileName = fileFullName;
