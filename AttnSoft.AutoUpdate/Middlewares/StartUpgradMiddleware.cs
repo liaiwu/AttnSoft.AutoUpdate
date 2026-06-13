@@ -5,6 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Security;
 using System.Threading.Tasks;
 
 namespace AttnSoft.AutoUpdate.Middlewares;
@@ -26,23 +27,35 @@ public class StartUpgradMiddleware : IStartUpgrad
         try
         {
             const string ProcessInfoFileName = "newVersionInfo.json";
+            var processInfoFilePath = Path.Combine(context.AppPath, ProcessInfoFileName);
             var appPath = Path.Combine(context.AppPath, context.UpgradName);
 
-            if (File.Exists(ProcessInfoFileName))
+            if (File.Exists(processInfoFilePath))
             {
-                File.SetAttributes(ProcessInfoFileName, FileAttributes.Normal);
-                File.Delete(ProcessInfoFileName);
+                File.SetAttributes(processInfoFilePath, FileAttributes.Normal);
+                File.Delete(processInfoFilePath);
             }
             if (string.IsNullOrEmpty(context.UpdateVersion.StartAppCmd))
             {
                 context.UpdateVersion.StartAppCmd = context.StartAppCmd;
+            }
+
+            // 安全检查：防止服务端控制的 StartAppCmd 路径遍历攻击
+            if (!string.IsNullOrEmpty(context.UpdateVersion.StartAppCmd))
+            {
+                var cmd = context.UpdateVersion.StartAppCmd;
+                if (cmd.IndexOf('\\') >= 0 || cmd.IndexOf('/') >= 0 || cmd.IndexOf("..") >= 0)
+                {
+                    throw new SecurityException(
+                        $"Invalid StartAppCmd: path traversal detected '{cmd}'");
+                }
             }
 #if NETFRAMEWORK
             var ProcessInfo = DefaultJsonConvert.JsonConvert.Serialize(context.UpdateVersion);
 #else
             var ProcessInfo = DefaultJsonConvert.JsonConvert.Serialize(context.UpdateVersion, VersionInfoJsonContext.Default.VersionInfo);
 #endif
-            File.WriteAllText(ProcessInfoFileName, ProcessInfo);
+            File.WriteAllText(processInfoFilePath, ProcessInfo);
 
             var arguments = new Collection<string>
                 {
@@ -64,13 +77,19 @@ public class StartUpgradMiddleware : IStartUpgrad
             };
             processStartInfo.Arguments = Utils.BuildArguments(arguments);
 
-            Process.Start(processStartInfo);
-            Process.GetCurrentProcess().Kill();
+            try
+            {
+                var process = Process.Start(processStartInfo);
+                if (process == null)
+                    throw new InvalidOperationException($"Failed to start upgrade process: {appPath}");
+            }
+            catch (Exception ex)
+            {
+                context.OnUpdateException?.Invoke(ex);
+                return;
+            }
 
-            string path = context.TempPath;
-            if (Directory.Exists(path))
-                StorageManager.DeleteDirectory(path);
-            //await next(context);
+            Environment.Exit(0);
         }
         catch (Exception ex)
         {
@@ -84,11 +103,8 @@ public class StartUpgradMiddleware : IStartUpgrad
         {
             context.OnBeforeInstall.Invoke(context);
         }
-        else
-        {
-            ExeUpdateAsync(context);
-        }
-        await next(context);
+        ExeUpdateAsync(context);
+        //await next(context);
     }
 
 }
