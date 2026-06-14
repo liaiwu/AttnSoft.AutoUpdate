@@ -1,6 +1,5 @@
 ﻿using AttnSoft.AutoUpdate.Common;
 using AttnSoft.AutoUpdate.JsonContext;
-using GeneralUpdate.Common.FileBasic;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -69,13 +68,18 @@ public class StartUpgradMiddleware : IStartUpgrad
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = appPath,
-                UseShellExecute = true,
-#if !DEBUG
-                WindowStyle = ProcessWindowStyle.Hidden, // 隐藏启动窗口
-                CreateNoWindow = true // 不创建新窗口
-#endif
+                UseShellExecute = false,
+                CreateNoWindow = true
             };
             processStartInfo.Arguments = Utils.BuildArguments(arguments);
+
+#if WINDOWS
+            processStartInfo.UseShellExecute = true;
+            processStartInfo.Verb = "runas"; // Windows 以管理员权限启动
+#if !DEBUG
+            processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+#endif
+#endif
 
             try
             {
