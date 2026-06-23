@@ -35,6 +35,7 @@
 		<Compile Include="..\AttnSoft.AutoUpdate\Common\JsonConvert\DefaultJsonConvert.cs" Link="JsonConvert\DefaultJsonConvert.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\Common\JsonConvert\IJsonConvert.cs" Link="JsonConvert\IJsonConvert.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\JsonContent\VersionInfoJsonContext.cs" Link="Objects\VersionInfoJsonContext.cs" />
+		<Compile Include="..\AttnSoft.AutoUpdate\JsonPropertyNameAttribute.cs" Link="JsonPropertyNameAttribute.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\Log\LoggerFactory.cs" Link="Log\LoggerFactory.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\Log\TimestampWriter.cs" Link="Log\TimestampWriter.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\VersionInfo.cs" Link="Objects\VersionInfo.cs" />
