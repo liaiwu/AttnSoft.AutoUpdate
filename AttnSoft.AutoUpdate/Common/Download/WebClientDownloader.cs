@@ -12,7 +12,6 @@ namespace AttnSoft.AutoUpdate.Common
     /// </summary>
     public class FileDownloader
     {
-        //public event Action? OnDownloadCanceled;
         /// <summary>
         /// 下载进度变化事件,参数1:文件总大小,参数2:下载进度
         /// </summary>

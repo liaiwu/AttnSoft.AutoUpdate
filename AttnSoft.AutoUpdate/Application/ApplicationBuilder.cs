@@ -28,14 +28,12 @@ namespace AttnSoft.AutoUpdate
         /// 获取服务提供者
         /// </summary>
         public IServiceProvider ApplicationServices { get; }
-        //public IServiceCollection Services { get; } 
 
         /// <summary>
         /// 应用程序创建者
         /// </summary>
         /// <param name="appServices"></param>
         public ApplicationBuilder(IServiceProvider appServicesProvider)
-            //: this(appServices, context => Task.CompletedTask)
         {
             ApplicationServices= appServicesProvider;
             fallbackHandler= context => Task.CompletedTask;
@@ -51,7 +49,6 @@ namespace AttnSoft.AutoUpdate
         //    ApplicationServices = new ServiceCollection().BuildServiceProvider();
         //    //this.ApplicationServices = appServices;
         //    this.fallbackHandler = fallbackHandler;
-        //}
         /// <summary>
         /// 应用程序创建者
         /// </summary>
@@ -130,11 +127,6 @@ namespace AttnSoft.AutoUpdate
                 }
             });
         }
-        //public ApplicationBuilder<TContext> Use<TMiddleware>() where TMiddleware : IApplicationMiddleware<TContext>, new()
-        //{
-        //    var middleware = new TMiddleware();
-        //    return this.Use(middleware);
-        //}
         /// <summary>
         /// 使用中间件
         /// </summary>

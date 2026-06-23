@@ -133,14 +133,6 @@ namespace GeneralUpdate.Common.FileBasic
             }
         }
 
-        //public static bool HashEquals(string leftPath, string rightPath)
-        //{
-        //    var hashAlgorithm = new Sha256HashAlgorithm();
-        //    var hashLeft = hashAlgorithm.ComputeHash(leftPath);
-        //    var hashRight = hashAlgorithm.ComputeHash(rightPath);
-        //    return hashLeft.SequenceEqual(hashRight);
-        //}
-
         /// <summary>
         /// Backup the all program.
         /// </summary>
@@ -228,8 +220,6 @@ namespace GeneralUpdate.Common.FileBasic
             {
                 if (BlackListManager.Instance.IsBlacklisted(subPath)) continue;
 
-                //var hashAlgorithm = new Sha256HashAlgorithm();
-                //var hash = hashAlgorithm.ComputeHash(subPath);
                 var hash= HashAlgorithmService.ComputeHash(subPath);
                 var subFileInfo = new FileInfo(subPath);
                 var subUri = new Uri(subFileInfo.FullName);

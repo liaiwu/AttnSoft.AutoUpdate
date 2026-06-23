@@ -16,7 +16,6 @@ namespace AttnSoft.AutoUpdate.Common
     /// </summary>
     public class FileDownloader
     {
-        //public event Action? OnDownloadCanceled;
         /// <summary>
         /// 下载进度变化事件,参数1:文件总大小,参数2:下载进度
         /// </summary>
@@ -45,9 +44,9 @@ namespace AttnSoft.AutoUpdate.Common
                         using (Stream contentStream = await response.Content.ReadAsStreamAsync(), fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 10240, true))
                         {
                             int bytesRead;
-                            while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                            while ((bytesRead = await contentStream.ReadAsync(buffer.AsMemory())) > 0)
                             {
-                                await fileStream.WriteAsync(buffer, 0, bytesRead);
+                                await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead));
                                 totalBytesRead += bytesRead;
                                 int progress = (int)((totalBytesRead * 100) / totalBytes);
                                 if (progress > preProgress)

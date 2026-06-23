@@ -45,8 +45,7 @@ public class BlackListManager
 
     public IReadOnlyList<string> BlackFileFormats => _blackFileFormats.AsReadOnly();
     public IReadOnlyList<string> BlackFiles => _blackFiles.AsReadOnly();
-
-    public IReadOnlyList<string> SkipDirectorys = _skipDirectorys.AsReadOnly();
+    public IReadOnlyList<string> SkipDirectorys => _skipDirectorys.AsReadOnly();
 
     public void AddBlackFileFormats(List<string>? formats)
     {

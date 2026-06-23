@@ -4,7 +4,6 @@
 using Newtonsoft.Json;
 
 using System;
-//using System.Web.Script.Serialization;
 namespace AttnSoft.AutoUpdate.Common
 {
     internal class DefaultJsonConvert : IJsonConvert
