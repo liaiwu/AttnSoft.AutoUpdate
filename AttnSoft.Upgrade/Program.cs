@@ -1,4 +1,5 @@
-﻿using AttnSoft.Upgrad;
+﻿using AttnSoft.AutoUpdate;
+using AttnSoft.Upgrad;
 using System;
 using System.Threading.Tasks;
 
@@ -7,11 +8,11 @@ internal class Program
 {
     static async Task Main(string[] args)
     {
-
         Console.WriteLine($"{DateTime.Now}:The AttnSoft.Upgrade is starting to install...");
 #if DEBUG
-        Console.WriteLine("Please press any key to continue...");
-        Console.ReadKey();
+        LoggerFactory.Initialize();
+        Console.WriteLine("---------------------------------------------------------");
+        //Console.ReadKey();
 #endif
         try
         {
@@ -22,7 +23,6 @@ internal class Program
         catch (Exception ex)
         {
             Console.WriteLine("Install Error: " + ex.Message + Environment.NewLine + ex.StackTrace);
-            Console.ReadKey();
         }
     }
 

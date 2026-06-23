@@ -12,6 +12,19 @@ internal class UpgradApp
     UpgradContext Context = new UpgradContext();
     public async Task StartInstall()
     {
+        if (Context.MainPid.HasValue)
+        {
+            try
+            {
+                var mainProcess = Process.GetProcessById(Context.MainPid.Value);
+                mainProcess.WaitForExit(5000);
+            }
+            catch (ArgumentException)
+            {
+                // 主进程已经退出，无需等待
+            }
+        }
+
         var patchPath = Context.PatchPath;
         var version = Context.UpdateVersion;
         var sourcePath = Context.AppPath;
@@ -50,22 +63,30 @@ internal class UpgradApp
 
     public void StartApp()
     {
+        var mainFileName = Path.Combine(Context.AppPath, Context.UpdateVersion.StartAppCmd);
+        if (string.IsNullOrEmpty(mainFileName) || !File.Exists(mainFileName))
+        {
+            Console.WriteLine($"Startup program not found: {mainFileName}");
+            return;
+        }
+
         try
         {
-            var mainFileName = Path.Combine(Context.AppPath, Context.UpdateVersion.StartAppCmd);
-            var processStartInfo = new ProcessStartInfo
+            Process.Start(new ProcessStartInfo
             {
                 FileName = mainFileName,
                 UseShellExecute = true,
-                Arguments= "AttnSoft.AutoUpdate.Successful"
-            };
-            Process.Start(processStartInfo);
-
-            Clear(Context.BackupPath);
+                Arguments = "AttnSoft.AutoUpdate.Successful"
+            });
         }
-        finally
+        catch(Exception ex)
         {
-            Process.GetCurrentProcess().Kill();
+            Console.WriteLine($"Failed to start application: {mainFileName}");
+            Console.WriteLine($"Error: {ex.Message}");
+            return;
         }
+
+        Clear(Context.BackupPath);
+        Process.GetCurrentProcess().Kill();
     }
 }

@@ -14,6 +14,7 @@ public class UpgradContext
     public string AppPath { get; set; }
     public string BackupPath { get; set; }
     public string PatchPath { get; set; }
+    public int? MainPid { get; set; }
     internal UpgradContext()
     {
         string[] args = Environment.GetCommandLineArgs();
@@ -30,6 +31,9 @@ public class UpgradContext
                     break;
                 case "--patchPath":
                     PatchPath = args[index + 1];
+                    break;
+                case "--mainPid":
+                    MainPid = int.Parse(args[index + 1]);
                     break;
             }
         }
