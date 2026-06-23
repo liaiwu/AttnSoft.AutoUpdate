@@ -47,8 +47,10 @@ namespace AttnSoft.AutoUpdate
         {
             try
             {
+#if DEBUG
+                LoggerFactory.Initialize();
+#endif
                 await Build().Invoke(Context);
-                //OnUpdateCompleted?.Invoke();
             }
             catch (Exception ex)
             {
@@ -84,7 +86,7 @@ namespace AttnSoft.AutoUpdate
                 }
                 else
                 {
-                    return null;
+                    break;
                 }
             }
             return null;
