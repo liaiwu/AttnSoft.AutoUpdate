@@ -76,12 +76,6 @@ public static partial class UpdateContextExtensions
         });
 
         httpClient.DefaultRequestHeaders.Accept.ParseAdd("text/html, application/xhtml+xml, */*");
-        //这里如果有权限认证,建议通过事件在主程序中实现
-        //if (!string.IsNullOrEmpty(scheme) && !string.IsNullOrEmpty(token))
-        //{
-        //    httpClient.DefaultRequestHeaders.Authorization =
-        //        new System.Net.Http.Headers.AuthenticationHeaderValue(scheme, token);
-        //}
         string postData = $"{{\"Version\": \"{context.ClientVersion}\", \"AppKey\": \"{context.AppSecretKey}\"}}";
 
         var stringContent = new StringContent(postData, Encoding.UTF8, "application/json");

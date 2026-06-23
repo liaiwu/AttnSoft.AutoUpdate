@@ -24,10 +24,7 @@ public class DecompressMiddleware : IDecompress
             throw new FileNotFoundException("未找到下载的升级包文件!", sourcePath);
         }
         CompressionService.Decompress(sourcePath, patchPath);
-#if DEBUG
-        Console.WriteLine($"解压完成!sourcePath:{sourcePath},TempDirectory:{patchPath}");
-        Console.ReadKey();
-#endif
+        Console.WriteLine($"[Decompress] Decompress completed, PatchPath={patchPath}");
         await next(context);
     }
 }

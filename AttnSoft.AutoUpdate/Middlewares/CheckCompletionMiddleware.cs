@@ -25,7 +25,6 @@ public class CheckCompletionMiddleware : ICheckCompletion
         for (var index = 0; index < args.Length; index++)
         {
             string arg = args[index];
-            //Console.WriteLine(arg);
             if (arg== "AttnSoft.AutoUpdate.Successful")return true;
         }
         return false;

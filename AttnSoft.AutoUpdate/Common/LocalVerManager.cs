@@ -24,16 +24,13 @@ namespace AttnSoft.AutoUpdate.Common
                 string fileFullName=Path.Combine(AppPath, filename);
                 if (File.Exists(fileFullName)) 
                 {
-                    string jsonString = string.Empty;
-                    if (File.Exists(filename))
-                    {
-                        jsonString = File.ReadAllText(filename);
+                    string jsonString = File.ReadAllText(fileFullName);
 #if NETFRAMEWORK
-                        versionInfo = DefaultJsonConvert.JsonConvert.Deserialize<VersionInfo>(jsonString);
+                    versionInfo = DefaultJsonConvert.JsonConvert.Deserialize<VersionInfo>(jsonString);
 #else
-                        versionInfo = DefaultJsonConvert.JsonConvert.Deserialize<VersionInfo>(jsonString, VersionInfoJsonContext.Default.VersionInfo);
+                    versionInfo = DefaultJsonConvert.JsonConvert.Deserialize<VersionInfo>(jsonString, VersionInfoJsonContext.Default.VersionInfo);
 #endif
-                    }
+
                 }
             }
             return versionInfo;

@@ -22,8 +22,6 @@ public class BackupMiddleware : IBackup
             BlackListManager.Instance.AddSkipDirectorys(new List<string>(context.UpdateVersion.SkipDirectorys));
         }
      
-        //BlackListManager.Instance.AddBlackFileFormats(context.UpdateVersion.BlackFormats);
-        //BlackListManager.Instance.AddBlackFiles(context.UpdateVersion.BlackFiles);
         StorageManager.Backup(context.AppPath, context.BackupPath, BlackListManager.Instance.SkipDirectorys);
 
         await next(context);

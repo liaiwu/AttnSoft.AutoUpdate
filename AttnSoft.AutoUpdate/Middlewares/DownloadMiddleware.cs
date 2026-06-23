@@ -30,9 +30,6 @@ public class DownloadMiddleware : IDownload
         downloader.OnDownloadCompleted +=() => context.OnDownloadCompleted?.Invoke();
         downloader.OnDownloadException+=(ex) => context.OnDownloadException?.Invoke(ex);
 
-        //var cancellationTokenSource = new CancellationTokenSource();
-        //await downloader.DownloadFileAsync(url, fileFullName, cancellationTokenSource.Token);
-
         await downloader.DownloadFileAsync(url, fileFullName);
         await next(context);
     }
