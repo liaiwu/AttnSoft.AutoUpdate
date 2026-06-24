@@ -1,4 +1,5 @@
-﻿using GeneralUpdate.Common.FileBasic;
+﻿using AttnSoft.AutoUpdate.Common;
+using GeneralUpdate.Common.FileBasic;
 using GeneralUpdate.Differential;
 using System;
 using System.Diagnostics;
@@ -12,18 +13,9 @@ internal class UpgradApp
     UpgradContext Context = new UpgradContext();
     public async Task StartInstall()
     {
-        if (Context.MainPid.HasValue)
-        {
-            try
-            {
-                var mainProcess = Process.GetProcessById(Context.MainPid.Value);
-                mainProcess.WaitForExit(5000);
-            }
-            catch (ArgumentException)
-            {
-                // 主进程已经退出，无需等待
-            }
-        }
+        // 扫描并关闭应用目录下的所有进程
+        ProcessHelper.KillAllInDir(Context.AppPath);
+
 
         var patchPath = Context.PatchPath;
         var version = Context.UpdateVersion;
