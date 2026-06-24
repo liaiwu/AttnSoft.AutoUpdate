@@ -23,11 +23,16 @@ public class StartUpgradMiddleware : IStartUpgrad
     /// <param name="context"></param>
     public static void ExeUpdateAsync(UpdateContext context)
     {
+        Console.WriteLine("[StartUpgrad] === Start ExeUpdateAsync ===");
         try
         {
+            // 确保应用目录下没有已运行的升级器进程
+            ProcessHelper.KillByNameInDir(context.AppPath, context.UpgradName);
+
             const string ProcessInfoFileName = "newVersionInfo.json";
             var processInfoFilePath = Path.Combine(context.AppPath, ProcessInfoFileName);
             var appPath = Path.Combine(context.AppPath, context.UpgradName);
+            Console.WriteLine($"[StartUpgrad] Upgrade path: {appPath}");
 
             if (File.Exists(processInfoFilePath))
             {
@@ -55,6 +60,7 @@ public class StartUpgradMiddleware : IStartUpgrad
             var ProcessInfo = DefaultJsonConvert.JsonConvert.Serialize(context.UpdateVersion, VersionInfoJsonContext.Default.VersionInfo);
 #endif
             File.WriteAllText(processInfoFilePath, ProcessInfo);
+            Console.WriteLine($"[StartUpgrad] Written {processInfoFilePath}");
 
             var arguments = new Collection<string>
                 {
@@ -63,7 +69,7 @@ public class StartUpgradMiddleware : IStartUpgrad
                     "--backupPath",
                     context.BackupPath,
                     "--patchPath",
-                    context.PatchPath
+                    context.PatchPath,
                 };
             var processStartInfo = new ProcessStartInfo
             {
@@ -72,6 +78,7 @@ public class StartUpgradMiddleware : IStartUpgrad
                 CreateNoWindow = true
             };
             processStartInfo.Arguments = Utils.BuildArguments(arguments);
+            Console.WriteLine($"[StartUpgrad] Arguments: {processStartInfo.Arguments}");
 
 #if WINDOWS
             processStartInfo.UseShellExecute = true;
@@ -83,32 +90,45 @@ public class StartUpgradMiddleware : IStartUpgrad
 
             try
             {
+                Console.WriteLine("[StartUpgrad] About to call Process.Start(...)");
                 var process = Process.Start(processStartInfo);
                 if (process == null)
                     throw new InvalidOperationException($"Failed to start upgrade process: {appPath}");
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"[StartUpgrad] Exception: {ex}");
                 context.OnUpdateException?.Invoke(ex);
                 return;
             }
 
+            Console.WriteLine("[StartUpgrad] Calling Environment.Exit(0)");
             Environment.Exit(0);
         }
         catch (Exception ex)
         {
+            Console.WriteLine($"[StartUpgrad] Exception: {ex}");
             context.OnUpdateException?.Invoke(ex);
         }
     }
 
     public async Task InvokeAsync(ApplicationDelegate<UpdateContext> next, UpdateContext context)
     {
-        if (context.OnBeforeInstall != null)
+        try
         {
-            context.OnBeforeInstall.Invoke(context);
+            if (context.OnBeforeInstall != null)
+            {
+                Console.WriteLine("[StartUpgrad] Calling OnBeforeInstall callback");
+                context.OnBeforeInstall.Invoke(context);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[StartUpgrad] OnBeforeInstall exception: {ex}");
+            context.OnUpdateException?.Invoke(ex);
+            return;
         }
         ExeUpdateAsync(context);
-        //await next(context);
     }
 
 }
