@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<!--<TargetFramework>netstandard2.0</TargetFramework>-->
-		<TargetFrameworks>net461;netstandard2.0;net6.0;net6.0-windows;net10.0</TargetFrameworks>
-		<Version>3.3.5</Version>
+		<TargetFrameworks>net461;net6.0;net6.0-windows;net10.0</TargetFrameworks>
+		<Version>3.5.0</Version>
 		<Nullable>enable</Nullable>
 		<LangVersion>default</LangVersion>
 		<Authors>LAW</Authors>
@@ -38,7 +38,6 @@
 	<ItemGroup>
 	  <Compile Remove="Common\HashAlgorithms\Md5HashAlgorithm.cs" />
 	  <Compile Remove="Common\HashAlgorithms\Sha1HashAlgorithm.cs" />
-	  <Compile Remove="LoggerFactory.cs" />
 	  <Compile Remove="UI\WinForm\FmUpdate.cs" />
 	  <Compile Remove="UI\WinForm\FmUpdate.Designer.cs" />
 	</ItemGroup>
@@ -86,12 +85,8 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETFramework'">
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
-		<PackageReference Include="System.Text.Json" Version="9.0.0" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETStandard'">
-		<PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
-		<PackageReference Include="System.Text.Json" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+		<PackageReference Include="System.Text.Json" Version="10.0.0" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="UI\WinForm\" />
