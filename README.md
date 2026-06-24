@@ -90,12 +90,22 @@ git clone https://github.com/liaiwu/AttnSoft.AutoUpdate.git
 ]
 ```
 #### 补丁包制作
+
 可以根据补丁包的大小选择如下两种方式:
 1. 全量更新：
 如果补丁包不大的话,可以直接将要更新的文件用压缩工具生成单一ZIP格式的文件即可。
 2. 差异更新：
 如果补丁包很大的话,可以采用差异更新方式制作补丁包以减少补丁包的大小。
 可以使用GeneralUpdate提供的[工具包](https://github.com/GeneralLibrary/GeneralUpdate.Tools.git)制作。
+
+#### 进程管理
+
+组件内置进程管理机制，确保升级过程可靠：
+
+- **升级器残留清理**：主程序在启动 Upgrade 前自动检测并结束应用目录下残留的升级器进程（防止上次升级失败导致的冲突）
+- **多进程自动关闭**：升级器在执行安装前自动扫描应用目录下所有运行中的进程并逐一结束，支持多进程架构应用（如主进程 + 子进程）的无缝升级
+- **防误杀机制**：通过进程名和主模块路径双重校验，避免误杀其他目录下的同名进程
+- **跨平台兼容**：Windows 和 Linux 平台均支持，进程名匹配自动处理扩展名差异
 
 ### WinAppClient运行示例
 ![Alt text](demo.gif "Demo")
@@ -115,6 +125,15 @@ git clone https://github.com/liaiwu/AttnSoft.AutoUpdate.git
 Github: https://github.com/liaiwu/AttnSoft.AutoUpdate.git
 
 Gitee:  https://gitee.com/attnsoft/AttnSoft.AutoUpdate.git
+
+## 更新日志
+
+### v3.5.0 (2026-06-24)
+- **新增** `ProcessHelper` 进程工具类，统一进程扫描和关闭逻辑
+- **改进** 升级器安装前自动扫描并关闭应用目录下所有进程，支持多进程应用升级
+- **改进** 主程序启动升级器前自动清理残留升级器进程，双重校验（进程名 + 路径）防止误杀
+- **重构** `UpgradMiddleware` 移除临时文件写入逻辑，恢复直接写入目标文件
+- **移除** 废弃的 `--mainPid` 命令行参数
 
 ## 感谢
 

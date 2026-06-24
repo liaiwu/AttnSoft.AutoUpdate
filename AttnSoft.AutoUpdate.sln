@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttnSoft.AutoUpdate", "AttnSoft.AutoUpdate\AttnSoft.AutoUpdate.csproj", "{4C90389B-A464-478D-AC82-2072943AD292}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinAppClient", "Examples\WinAppClient\WinAppClient.csproj", "{27AA5879-296C-4ED7-A1B3-0692536719A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerSample", "Examples\Server\ServerSample.csproj", "{0CB996C3-D79D-4ACE-8985-709613F8949C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleUpdate", "ConsoleUpdate\ConsoleUpdate.csproj", "{45F6E451-5E84-4D83-975E-F1ABF62D25BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{0CB996C3-D79D-4ACE-8985-709613F8949C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CB996C3-D79D-4ACE-8985-709613F8949C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CB996C3-D79D-4ACE-8985-709613F8949C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45F6E451-5E84-4D83-975E-F1ABF62D25BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45F6E451-5E84-4D83-975E-F1ABF62D25BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45F6E451-5E84-4D83-975E-F1ABF62D25BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45F6E451-5E84-4D83-975E-F1ABF62D25BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -42,5 +48,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{27AA5879-296C-4ED7-A1B3-0692536719A8} = {FD14B1C8-1E71-464D-B0CF-829BF94A9D2A}
 		{0CB996C3-D79D-4ACE-8985-709613F8949C} = {FD14B1C8-1E71-464D-B0CF-829BF94A9D2A}
+		{45F6E451-5E84-4D83-975E-F1ABF62D25BA} = {FD14B1C8-1E71-464D-B0CF-829BF94A9D2A}
 	EndGlobalSection
 EndGlobal
