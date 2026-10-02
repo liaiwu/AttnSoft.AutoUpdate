@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<!--<TargetFramework>netstandard2.0</TargetFramework>-->
-		<TargetFrameworks>net461;net6.0;net6.0-windows;net10.0</TargetFrameworks>
-		<Version>3.5.0</Version>
+		<TargetFrameworks>net461;net6.0;net8.0;net10.0</TargetFrameworks>
+		<Version>3.5.1</Version>
 		<Nullable>enable</Nullable>
 		<LangVersion>default</LangVersion>
 		<Authors>LAW</Authors>
@@ -21,11 +21,7 @@
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<PackageIcon>AttnSoft.Update.png</PackageIcon>
 	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == 'net6.0-windows'">
-		<UseWindowsForms>true</UseWindowsForms>
-	</PropertyGroup>
-
+	
 	<ItemGroup>
 	  <Compile Remove="Common\JsonContext\**" />
 	  <Compile Remove="Common\Object\**" />
