@@ -5,7 +5,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using GeneralUpdate.Common.FileBasic;
 
 namespace GeneralUpdate.Common.Compress;
@@ -144,13 +143,16 @@ public class ZipCompressionStrategy : ICompressionStrategy
                 directoryInfo.Create();
             }
 
+            // 先规范化目标根目录供下面逐条断言：拼接式路径遇到 ".." 会写到目标目录之外。
+            var destRoot = Path.GetFullPath(directoryInfo.FullName).TrimEnd(Path.DirectorySeparatorChar);
+
             var fileInfo = new FileInfo(zipFilePath);
             if (!fileInfo.Exists)
             {
                 return;
             }
 
-            using var zipToOpen = new FileStream(zipFilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read);
+            using var zipToOpen = new FileStream(zipFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             using var archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read, false, encoding);
             for (int i = 0; i < archive.Entries.Count; i++)
             {
@@ -160,10 +162,17 @@ public class ZipCompressionStrategy : ICompressionStrategy
                     continue;
                 }
 
-                var pattern = $"^{dirSeparatorChar}*";
-                var entryFilePath = Regex.Replace(entries.FullName.Replace("/", dirSeparatorChar), pattern,
-                    "");
-                var filePath = directoryInfo + entryFilePath;
+                // 原 pattern 求值为 "^\*"，在正则里是「行首的字面星号」，从未去掉过前导分隔符。
+                // 旧代码靠字符串拼接把多余的 "/" 吸收掉才没出问题，改用 Path.Combine 后必须真的去掉。
+                var entryFilePath = entries.FullName.Replace("/", dirSeparatorChar)
+                    .TrimStart(Path.DirectorySeparatorChar);
+                var filePath = Path.GetFullPath(Path.Combine(destRoot, entryFilePath));
+                if (!filePath.StartsWith(destRoot + Path.DirectorySeparatorChar, StringComparison.Ordinal))
+                {
+                    throw new InvalidDataException(
+                        $"Zip entry tries to write outside the target directory: {entries.FullName}");
+                }
+
                 var greatFolder = Directory.GetParent(filePath);
                 if (greatFolder is not null && !greatFolder.Exists)
                 {
@@ -178,6 +187,11 @@ public class ZipCompressionStrategy : ICompressionStrategy
 
                 entries.ExtractToFile(filePath);
             }
+        }
+        catch (InvalidDataException)
+        {
+            // 恶意条目原样抛出，让消费者能把它和「包损坏」区分开。
+            throw;
         }
         catch (Exception exception)
         {
