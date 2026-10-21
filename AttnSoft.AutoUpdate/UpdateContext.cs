@@ -88,6 +88,12 @@ namespace AttnSoft.AutoUpdate
         /// </summary>
         public bool IsMainUpdate { get; set; }
 
+        /// <summary>
+        /// 下载升级包时连续多少毫秒收不到数据即判为停滞并中止；0 = 不启用。默认 30000。
+        /// 只限停滞，不设总时长上限——慢链路下大包会被总时长误杀。
+        /// </summary>
+        public int DownloadStallTimeoutMs { get; set; } = 30_000;
+
         Version clientVer;
         public Version ClientVersion
         {

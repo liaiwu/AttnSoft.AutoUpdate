@@ -3,14 +3,8 @@ using AttnSoft.AutoUpdate.Common;
 using AttnSoft.AutoUpdate.JsonContext;
 
 using System;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-
-
-#if !NETFRAMEWORK
-using System.Net.Http;
-#endif
 
 namespace AttnSoft.AutoUpdate;
 public static partial class UpdateContextExtensions
@@ -22,39 +16,25 @@ public static partial class UpdateContextExtensions
     }
     public async static Task<VersionInfoList?> GetVersionInfoFromOss(UpdateContext context)
     {
-#if !NETFRAMEWORK
-        using var httpClient = new HttpClient(new HttpClientHandler
-        {
-            ServerCertificateCustomValidationCallback = (a, b, c, d) => true
-        });
-
-        using (HttpResponseMessage response = await httpClient.GetAsync(context.UpdateUrl, HttpCompletionOption.ResponseHeadersRead))
-        {
-            response.EnsureSuccessStatusCode();
-            string responseJsonStr = await response.Content.ReadAsStringAsync();
-            return DefaultJsonConvert.JsonConvert.Deserialize<VersionInfoList>(responseJsonStr, VersionRespJsonContext.Default.VersionInfoList);
-        }
-#else
+        WarnIfInsecureTransport(context.UpdateUrl);
         try
         {
-            using (WebClient client = new WebClient())
-            {
-                var data = await client.DownloadDataTaskAsync(new Uri(context.UpdateUrl));
-                if (data != null && data.Length > 0)
-                {
-                    string responseJsonStr = Encoding.UTF8.GetString(data);
-                    return DefaultJsonConvert.JsonConvert.Deserialize<VersionInfoList>(responseJsonStr);
-                }
-            }
+            byte[] data = await CreateDownloader(context).GetDataAsync(context.UpdateUrl).ConfigureAwait(false);
+            if (data.Length == 0) return null;
+            string responseJsonStr = Encoding.UTF8.GetString(data);
+#if NETFRAMEWORK
+            return DefaultJsonConvert.JsonConvert.Deserialize<VersionInfoList>(responseJsonStr);
+#else
+            return DefaultJsonConvert.JsonConvert.Deserialize<VersionInfoList>(responseJsonStr, VersionRespJsonContext.Default.VersionInfoList);
+#endif
         }
         catch (Exception ex)
         {
-            context.OnUpdateException?.Invoke(ex);
+            // 失败一律返回 null 而不抛出：宿主靠 null 走备用 URL 兜底（AttnSoft.WinStart 实测依赖此语义）。
+            // 这里不触发 OnUpdateException——CheckUpdateMiddleware 的 null 分支会触发一次，再触发就是两次。
+            UpdateLog.Error("取版本信息失败", ex);
             return null;
         }
-        return null;
-#endif
-
     }
     /// <summary>
     /// 通过WebApi方式获取服务器的版本信息
@@ -68,45 +48,48 @@ public static partial class UpdateContextExtensions
     }
     public static async Task<VersionInfoList?> GetVersionInfoFroWebApi(UpdateContext context)
     {
-#if !NETFRAMEWORK
-        var uri = new Uri(context.UpdateUrl);
-        using var httpClient = new HttpClient(new HttpClientHandler
-        {
-            ServerCertificateCustomValidationCallback = (a, b, c, d) => true
-        });
-
-        httpClient.DefaultRequestHeaders.Accept.ParseAdd("text/html, application/xhtml+xml, */*");
-        string postData = $"{{\"Version\": \"{context.ClientVersion}\", \"AppKey\": \"{context.AppSecretKey}\"}}";
-
-        var stringContent = new StringContent(postData, Encoding.UTF8, "application/json");
-        var result = await httpClient.PostAsync(uri, stringContent);
-        var responseJsonStr = await result.Content.ReadAsStringAsync();
-        Console.WriteLine("从WebApi获得Json:"+ responseJsonStr);
-
-        return DefaultJsonConvert.JsonConvert.Deserialize<VersionInfoList>(responseJsonStr, VersionRespJsonContext.Default.VersionInfoList);
-#else
+        WarnIfInsecureTransport(context.UpdateUrl);
         try
         {
-            using (WebClient client = new WebClient())
-            {
-                client.Headers[HttpRequestHeader.ContentType] = "application/json";
-                string postData = $"{{\"Version\": \"{context.ClientVersion}\", \"AppKey\": \"{context.AppSecretKey}\"}}";
-                var data = await client.UploadDataTaskAsync(new Uri(context.UpdateUrl), "POST", Encoding.UTF8.GetBytes(postData));
-                if (data != null && data.Length > 0)
-                {
-                    string responseJsonStr = Encoding.UTF8.GetString(data);
-                    Console.WriteLine("从WebApi获得Json:"+ responseJsonStr);
-                    return DefaultJsonConvert.JsonConvert.Deserialize<VersionInfoList>(responseJsonStr);
-                }
-            }
+            string postData = $"{{\"Version\": \"{context.ClientVersion}\", \"AppKey\": \"{context.AppSecretKey}\"}}";
+            // contentType 带 charset：改造前 net6+ 用 StringContent(..., Encoding.UTF8, ...) 出来的是
+            // "application/json; charset=utf-8"，只写 "application/json" 会让按精确 media type 匹配的服务端回 415。
+            byte[] data = await CreateDownloader(context).PostDataAsync(context.UpdateUrl,
+                    Encoding.UTF8.GetBytes(postData), "application/json; charset=utf-8", "text/html, application/xhtml+xml, */*")
+                .ConfigureAwait(false);
+            if (data.Length == 0) return null;
+            string responseJsonStr = Encoding.UTF8.GetString(data);
+            UpdateLog.Debug($"从WebApi获得Json:{responseJsonStr}");
+#if NETFRAMEWORK
+            return DefaultJsonConvert.JsonConvert.Deserialize<VersionInfoList>(responseJsonStr);
+#else
+            return DefaultJsonConvert.JsonConvert.Deserialize<VersionInfoList>(responseJsonStr, VersionRespJsonContext.Default.VersionInfoList);
+#endif
         }
         catch (Exception ex)
         {
-            context.OnUpdateException?.Invoke(ex);
+            UpdateLog.Error("取版本信息失败", ex);
             return null;
         }
-        return null;
-#endif
+    }
+
+    // 超时口径与下载升级包共用 DownloadStallTimeoutMs：版本信息只有几 KB，
+    // 「连续 N 毫秒收不到数据」与「N 毫秒内没完成」观测上等价，不必再加一个开关。
+    private static FileDownloader CreateDownloader(UpdateContext context)
+        => new FileDownloader { DownloadStallTimeoutMs = context.DownloadStallTimeoutMs };
+
+    // 禁用服务器证书校验是本组件的既有默认，用户必须知情。警告挂在 URL scheme 上而不是回调里：
+    // 回调只在 TLS 握手时触发，http:// 下永不执行，挂在那里等于永远不响。
+    private static void WarnIfInsecureTransport(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return;
+
+        var isHttps = Uri.TryCreate(url, UriKind.Absolute, out var uri)
+                      && string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase);
+
+        UpdateLog.Warning(isHttps
+            ? "组件已禁用服务器证书校验，HTTPS 下仍可被中间人伪造证书。"
+            : $"更新地址未使用 HTTPS（{url}），版本信息与升级包在传输中可被篡改；组件也已禁用证书校验。");
     }
 
 }
