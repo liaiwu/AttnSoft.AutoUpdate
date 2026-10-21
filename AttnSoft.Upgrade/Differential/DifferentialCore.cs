@@ -144,8 +144,11 @@ namespace GeneralUpdate.Differential
                 if (!File.Exists(file.FullName))
                     continue;
                 
-                File.SetAttributes(file.FullName, FileAttributes.Normal);
-                File.Delete(file.FullName);
+                FileBusyRetry.Run($"删除 {file.FullName}", () =>
+                {
+                    File.SetAttributes(file.FullName, FileAttributes.Normal);
+                    File.Delete(file.FullName);
+                });
             }
         }
 
@@ -188,7 +191,7 @@ namespace GeneralUpdate.Differential
                             {
                                 parent.Create();
                             }
-                            File.Copy(current.FullName, text, overwrite: true);
+                            FileBusyRetry.Run($"复制 {text}", () => File.Copy(current.FullName, text, overwrite: true));
                             list.Add(current.FullName);
                         }
                     }

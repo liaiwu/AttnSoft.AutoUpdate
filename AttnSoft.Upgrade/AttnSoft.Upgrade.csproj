@@ -2,14 +2,17 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<!--<TargetFrameworks>net461;</TargetFrameworks>-->
+		<TargetFrameworks>net461;net10.0</TargetFrameworks>
 		<Nullable>enable</Nullable>
 		<InvariantGlobalization>true</InvariantGlobalization>
 		<AssemblyName>Upgrade</AssemblyName>
 		<LangVersion>default</LangVersion>
 	</PropertyGroup>
-	<PropertyGroup>
-		<TargetFramework>net10.0</TargetFramework>
+	<!-- PublishAot 只适用于 .NET（net461 上会直接报错），且要求 self-contained，所以按目标框架分开设置。
+	     两份产物分别对应核心库嵌入的两个资源：
+	       net10.0 → Upgrade\AOT\Upgrade.exe        dotnet publish -f net10.0 -r win-x64
+	       net461  → Upgrade\Framework\Upgrade.exe  dotnet build -f net461 -->
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
 		<PublishAot>true</PublishAot>
 	</PropertyGroup>
 
@@ -26,7 +29,6 @@
 		<Compile Include="..\AttnSoft.AutoUpdate\Common\FileBasic\BlackListManager.cs" Link="FileBasic\BlackListManager.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\Common\FileBasic\ComparisonResult.cs" Link="FileBasic\ComparisonResult.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\Common\FileBasic\FileNode.cs" Link="FileBasic\FileNode.cs" />
-		<Compile Include="..\AttnSoft.AutoUpdate\Common\FileBasic\FileTree.cs" Link="FileBasic\FileTree.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\Common\FileBasic\StorageManager.cs" Link="FileBasic\StorageManager.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\Common\HashAlgorithms\HashAlgorithmBase.cs" Link="HashAlgorithms\HashAlgorithmBase.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\Common\HashAlgorithms\HashAlgorithmService.cs" Link="HashAlgorithms\HashAlgorithmService.cs" />
@@ -35,8 +37,10 @@
 		<Compile Include="..\AttnSoft.AutoUpdate\Common\JsonConvert\IJsonConvert.cs" Link="JsonConvert\IJsonConvert.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\JsonContent\VersionInfoJsonContext.cs" Link="Objects\VersionInfoJsonContext.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\JsonPropertyNameAttribute.cs" Link="JsonPropertyNameAttribute.cs" />
-		<Compile Include="..\AttnSoft.AutoUpdate\Log\LoggerFactory.cs" Link="Log\LoggerFactory.cs" />
-		<Compile Include="..\AttnSoft.AutoUpdate\Log\TimestampWriter.cs" Link="Log\TimestampWriter.cs" />
+		<Compile Include="..\AttnSoft.AutoUpdate\Log\MelShim.cs" Link="Log\MelShim.cs" />
+		<Compile Include="..\AttnSoft.AutoUpdate\Log\TraceUpdateLogger.cs" Link="Log\TraceUpdateLogger.cs" />
+		<Compile Include="..\AttnSoft.AutoUpdate\Log\UpdateLog.cs" Link="Log\UpdateLog.cs" />
+		<Compile Include="..\AttnSoft.AutoUpdate\Log\FileUpdateLogger.cs" Link="Log\FileUpdateLogger.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\Common\ProcessHelper.cs" Link="Common\ProcessHelper.cs" />
 		<Compile Include="..\AttnSoft.AutoUpdate\VersionInfo.cs" Link="Objects\VersionInfo.cs" />
 

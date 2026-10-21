@@ -1,4 +1,5 @@
-﻿using AttnSoft.AutoUpdate.Common;
+﻿using AttnSoft.AutoUpdate;
+using AttnSoft.AutoUpdate.Common;
 using GeneralUpdate.Common.FileBasic;
 using GeneralUpdate.Differential;
 using System;
@@ -42,10 +43,10 @@ internal class UpgradApp
         var localfilename = "Version.json";
         localfilename = Path.Combine(sourcePath, localfilename);
 
-        File.Delete(localfilename);
-        File.Move(newfilename, localfilename);
+        FileBusyRetry.Run($"删除 {localfilename}", () => File.Delete(localfilename));
+        FileBusyRetry.Run($"写入 {localfilename}", () => File.Move(newfilename, localfilename));
         
-        StartApp();
+        StartApp(true);
     }
     protected static void Clear(string path)
     {
@@ -53,12 +54,13 @@ internal class UpgradApp
             StorageManager.DeleteDirectory(path);
     }
 
-    public void StartApp()
+    /// <param name="succeeded">false 表示安装失败后的补救重启：不带升级成功标记、不清备份。</param>
+    public void StartApp(bool succeeded)
     {
         var mainFileName = Path.Combine(Context.AppPath, Context.UpdateVersion.StartAppCmd);
         if (string.IsNullOrEmpty(mainFileName) || !File.Exists(mainFileName))
         {
-            Console.WriteLine($"Startup program not found: {mainFileName}");
+            UpdateLog.Error($"Startup program not found: {mainFileName}");
             return;
         }
 
@@ -68,17 +70,23 @@ internal class UpgradApp
             {
                 FileName = mainFileName,
                 UseShellExecute = true,
-                Arguments = "AttnSoft.AutoUpdate.Successful"
+                // 这个标记会让宿主的 CheckCompletionMiddleware 触发 OnUpdateCompleted，安装失败时不能带
+                Arguments = succeeded ? "AttnSoft.AutoUpdate.Successful" : string.Empty
             });
         }
         catch(Exception ex)
         {
-            Console.WriteLine($"Failed to start application: {mainFileName}");
-            Console.WriteLine($"Error: {ex.Message}");
+            UpdateLog.Error($"启动主程序失败: {mainFileName}", ex);
             return;
         }
 
-        Clear(Context.BackupPath);
-        Process.GetCurrentProcess().Kill();
+        if (!succeeded) return;   // 失败时备份要留给回滚
+        // 备份没清掉只是收尾瑕疵，不能反过来否定一次已经成功的升级：StorageManager.DeleteDirectory
+        // 不吞异常，这里不兜住就会冒到 Program.Main 的 catch，把刚起来的主程序再起一遍。
+        try { Clear(Context.BackupPath); }
+        catch (Exception ex) { UpdateLog.Warning($"清理备份目录失败，不影响本次升级结果: {Context.BackupPath}", ex); }
     }
+
+    /// <summary>安装成功后结束自身。放在 Main 里而不是 StartApp 里，是为了让成功日志能先写出来。</summary>
+    public void KillSelf() => Process.GetCurrentProcess().Kill();
 }
