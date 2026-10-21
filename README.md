@@ -112,14 +112,43 @@ git clone https://github.com/liaiwu/AttnSoft.AutoUpdate.git
 
 此示例演示了winform下程序升级过程。
 
+## 日志
+
+组件只**产生**日志、不**决定**日志去向：默认写入 `System.Diagnostics.Trace`，Release 构建同样可见，不重定向 `Console.Out`、不写任何文件。最快的一行接入是交给宿主的日志框架：
+
+```csharp
+context.UseMicrosoftLogging(loggerFactory);   // Serilog / NLog / Console 均可，.NET 6 及以上
+```
+
+日志级别与输出接口直接采用 Microsoft.Extensions.Logging 的 `LogLevel` / `ILogger`，全部目标框架（含 .NET Framework 4.6.1）写法一致。五种拦截方案的对比与适用框架、类型来源与 net461 撞名条件、`Upgrade.exe` 的落盘位置、从 3.x 的迁移方式，见 [docs/LOGGING.md](docs/LOGGING.md)。
 
 ## 支持框架
 
 | .NET框架名称               | 是否支持 |
 | -------------------------- | -------- |
 | .NET Framework 4.6.1       | 支持     |
-| .NET Core 2.0 、3.1        | 支持     |
-| .NET 5  to last version   | 支持     |
+| .NET 6.0                   | 支持     |
+| .NET 8.0                   | 支持     |
+| .NET 10.0                  | 支持     |
+
+目标框架就是上表这四个（`net461;net6.0;net8.0;net10.0`）。不在其中的框架——含 .NET Core 2.0/3.1、
+.NET 5/7/9，以及 3.5.0 起已移除的 netstandard2.0——安装时会报 `NU1202`。
+
+#### .NET Framework 4.6.1 的注意事项
+
+Framework 版升级器 `Upgrade.exe` 解析版本信息要用 Newtonsoft.Json，而它是以**单个 exe** 嵌入核心库、
+释放到安装目录的，不带任何依赖项。所以**安装目录必须已有 `Newtonsoft.Json.dll`**，否则升级器启动时会抛
+`FileNotFoundException: 未能加载文件或程序集 "Newtonsoft.Json"`。多数 .NET Framework 应用本就带着它；
+没有的话把该 dll 放进安装目录即可。失败原因会记在 `{安装目录}\upgrade_logs\upgrade.log`，
+症状见 [docs/LOGGING.md](docs/LOGGING.md)。
+
+**宿主程序的 target framework 要 ≥ 4.6** 才能下到 https 的升级包。.NET Framework 的默认 TLS 版本
+由**宿主应用**的 target 决定（不是本组件的 4.6.1）：≥4.6 默认就含 TLS 1.2，而 target ≤4.5.2 默认不含，
+对端只接受 TLS 1.2 时**握手阶段就失败**，与证书无关。本组件不设 TLS 协议版本——`HttpWebRequest` 与
+`ServicePoint` 在 .NET Framework 上都没有实例级的 `SecurityProtocol` 属性，唯一的开关
+`ServicePointManager.SecurityProtocol` 是**进程级全局**的，会污染宿主里其他组件，本包不碰。
+宿主若 ≤4.5.2，请自行把宿主 target 提到 4.6 以上，或在宿主启动时自己设
+`ServicePointManager.SecurityProtocol`。
 
 ### 开源链接
 Github: https://github.com/liaiwu/AttnSoft.AutoUpdate.git
@@ -128,12 +157,7 @@ Gitee:  https://gitee.com/attnsoft/AttnSoft.AutoUpdate.git
 
 ## 更新日志
 
-### v3.5.0 (2026-06-24)
-- **新增** `ProcessHelper` 进程工具类，统一进程扫描和关闭逻辑
-- **改进** 升级器安装前自动扫描并关闭应用目录下所有进程，支持多进程应用升级
-- **改进** 主程序启动升级器前自动清理残留升级器进程，双重校验（进程名 + 路径）防止误杀
-- **重构** `UpgradMiddleware` 移除临时文件写入逻辑，恢复直接写入目标文件
-- **移除** 废弃的 `--mainPid` 命令行参数
+完整更新日志见 [docs/CHANGELOG.md](docs/CHANGELOG.md)。NuGet 包的 `PackageReleaseNotes` 也只放这个页面的链接，不再单独维护一份。
 
 ## 感谢
 
