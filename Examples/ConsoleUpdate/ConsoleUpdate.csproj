@@ -11,8 +11,5 @@
   <!-- 本项目专用于验证 NuGet 包引用，不跟本地代码走。
        4.0.0 尚未发布，故暂时走 ProjectReference；发布后换回
        <PackageReference Include="AttnSoft.AutoUpdate" Version="4.0.0" /> 复测。 -->
-  <ItemGroup>
-    <ProjectReference Include="..\AttnSoft.AutoUpdate\AttnSoft.AutoUpdate.csproj" />
-  </ItemGroup>
 
 </Project>

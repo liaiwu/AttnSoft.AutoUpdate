@@ -20,6 +20,7 @@
 		<PackageTags>autoupdate,upgrade,update,attnsoft.autoupdate</PackageTags>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<PackageIcon>AttnSoft.Update.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 	
 	<ItemGroup>
@@ -67,6 +68,7 @@
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
 	  </None>
+	  <None Include="..\README.md" Pack="True" PackagePath="\" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
