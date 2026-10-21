@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<!--<TargetFramework>netstandard2.0</TargetFramework>-->
 		<TargetFrameworks>net461;net6.0;net8.0;net10.0</TargetFrameworks>
-		<Version>3.5.1</Version>
+		<Version>4.0.0</Version>
 		<Nullable>enable</Nullable>
 		<LangVersion>default</LangVersion>
 		<Authors>LAW</Authors>
@@ -12,7 +12,7 @@
 		<SignAssembly>False</SignAssembly>
 		<RepositoryUrl>https://github.com/liaiwu/AttnSoft.AutoUpdate.git</RepositoryUrl>
 		<Copyright>Copyright © 2025 LAW. All rights reserved.</Copyright>
-		<PackageReleaseNotes>A lightweight, easy-to-use, cross-platform application for automatically updating components.一款轻量级、易于使用、跨平台的应用程序自动升级组件</PackageReleaseNotes>
+		<PackageReleaseNotes>https://github.com/liaiwu/AttnSoft.AutoUpdate/blob/main/docs/CHANGELOG.md</PackageReleaseNotes>
 		<PackageProjectUrl>https://github.com/liaiwu/AttnSoft.AutoUpdate</PackageProjectUrl>
 		<Title>AttnSoft.AutoUpdate</Title>
 		<PackageLicenseUrl>https://github.com/liaiwu/AttnSoft.AutoUpdate?tab=MIT-1-ov-file</PackageLicenseUrl>
@@ -77,11 +77,29 @@
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<!-- Abstractions 8.x 起最低只到 net462，6.0.x 要带 System.Buffers/System.Memory；
+		     3.1.32 走 netstandard2.0 资产且零依赖，而 ILogger / ILoggerFactory / LogLevel / EventId
+		     的成员与 8.0.2 逐行相同（本项目只用这几个）。 -->
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.32" />
 		<Reference Include="System.IO.Compression" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETFramework'">
+	<!-- 所有目标框架都用真 MEL 类型。Log\MelShim.cs 的兼容定义只留给零依赖的 Upgrade.exe
+	     （它不发布为包，宿主看不到那些类型，不会撞名 CS0433）。 -->
+	<PropertyGroup>
+		<DefineConstants>$(DefineConstants);HAS_MEL</DefineConstants>
+	</PropertyGroup>
+
+	<!-- 10.x 包族不带 net6.0 资产，会退化到 netstandard2.0 并报 "doesn't support net6.0"。
+	     8.0.x 是仍带 net6.0 原生资产的最高版本；传递依赖随之降级，不必显式引用。 -->
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+		<PackageReference Include="System.Text.Json" Version="8.0.0" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' != '.NETFramework' and '$(TargetFramework)' != 'net6.0'">
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
 		<PackageReference Include="System.Text.Json" Version="10.0.0" />
 	</ItemGroup>
 	<ItemGroup>
