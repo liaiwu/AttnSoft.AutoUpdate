@@ -1,4 +1,4 @@
-# ![Alt text](AttnSoft.AutoUpdate/AttnSoft.Update.ico "AttnSoft.AutoUpdate")AttnSoft.AutoUpdate
+# ![AttnSoft.AutoUpdate](https://raw.githubusercontent.com/liaiwu/AttnSoft.AutoUpdate/main/AttnSoft.AutoUpdate/AttnSoft.Update.png)AttnSoft.AutoUpdate
 
 
 AttnSoft.AutoUpdate 是一款轻量级、易于使用、跨平台的应用程序自动升级组件。
@@ -108,7 +108,7 @@ git clone https://github.com/liaiwu/AttnSoft.AutoUpdate.git
 - **跨平台兼容**：Windows 和 Linux 平台均支持，进程名匹配自动处理扩展名差异
 
 ### WinAppClient运行示例
-![Alt text](demo.gif "Demo")
+![Demo](https://raw.githubusercontent.com/liaiwu/AttnSoft.AutoUpdate/main/demo.gif)
 
 此示例演示了winform下程序升级过程。
 
@@ -120,7 +120,7 @@ git clone https://github.com/liaiwu/AttnSoft.AutoUpdate.git
 context.UseMicrosoftLogging(loggerFactory);   // Serilog / NLog / Console 均可，.NET 6 及以上
 ```
 
-日志级别与输出接口直接采用 Microsoft.Extensions.Logging 的 `LogLevel` / `ILogger`，全部目标框架（含 .NET Framework 4.6.1）写法一致。五种拦截方案的对比与适用框架、类型来源与 net461 撞名条件、`Upgrade.exe` 的落盘位置、从 3.x 的迁移方式，见 [docs/LOGGING.md](docs/LOGGING.md)。
+日志级别与输出接口直接采用 Microsoft.Extensions.Logging 的 `LogLevel` / `ILogger`，全部目标框架（含 .NET Framework 4.6.1）写法一致。五种拦截方案的对比与适用框架、类型来源与 net461 撞名条件、`Upgrade.exe` 的落盘位置、从 3.x 的迁移方式，见 [docs/LOGGING.md](https://github.com/liaiwu/AttnSoft.AutoUpdate/blob/main/docs/LOGGING.md)。
 
 ## 支持框架
 
@@ -140,7 +140,7 @@ Framework 版升级器 `Upgrade.exe` 解析版本信息要用 Newtonsoft.Json，
 释放到安装目录的，不带任何依赖项。所以**安装目录必须已有 `Newtonsoft.Json.dll`**，否则升级器启动时会抛
 `FileNotFoundException: 未能加载文件或程序集 "Newtonsoft.Json"`。多数 .NET Framework 应用本就带着它；
 没有的话把该 dll 放进安装目录即可。失败原因会记在 `{安装目录}\upgrade_logs\upgrade.log`，
-症状见 [docs/LOGGING.md](docs/LOGGING.md)。
+症状见 [docs/LOGGING.md](https://github.com/liaiwu/AttnSoft.AutoUpdate/blob/main/docs/LOGGING.md)。
 
 **宿主程序的 target framework 要 ≥ 4.6** 才能下到 https 的升级包。.NET Framework 的默认 TLS 版本
 由**宿主应用**的 target 决定（不是本组件的 4.6.1）：≥4.6 默认就含 TLS 1.2，而 target ≤4.5.2 默认不含，
@@ -157,7 +157,7 @@ Gitee:  https://gitee.com/attnsoft/AttnSoft.AutoUpdate.git
 
 ## 更新日志
 
-完整更新日志见 [docs/CHANGELOG.md](docs/CHANGELOG.md)。NuGet 包的 `PackageReleaseNotes` 也只放这个页面的链接，不再单独维护一份。
+完整更新日志见 [docs/CHANGELOG.md](https://github.com/liaiwu/AttnSoft.AutoUpdate/blob/main/docs/CHANGELOG.md)。NuGet 包的 `PackageReleaseNotes` 也只放这个页面的链接，不再单独维护一份。
 
 ## 感谢
 
