@@ -47,13 +47,19 @@ namespace AttnSoft.AutoUpdate
         {
             try
             {
-#if DEBUG
-                LoggerFactory.Initialize();
-#endif
-                await Build().Invoke(Context);
+                // 交棒线程池，两个理由：
+                // 1) async 方法在第一个 await 之前必然同步跑在调用方线程上（CLR 语义），
+                //    不包这一层，管道开头那段就还在宿主线程上；
+                // 2) net461 的下载器此前用 WebClient，其内部 AsyncOperation 会自己捕获上下文，
+                //    在宿主 UI 线程上调用会把进度与完成投递回去（实测 Post 12 次）。
+                //    现已换成 HttpWebRequest + 全程 ConfigureAwait(false)，不再投递（实测 Post 0 次），
+                //    这一层现在只由上面理由 1 支撑。
+                // 消费者的 await 仍回到他们自己的上下文，用法不变。
+                await Task.Run(() => Build().Invoke(Context)).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
+                UpdateLog.Error("升级流程失败", ex);
                 Context.OnUpdateException?.Invoke(ex);
             }
         }

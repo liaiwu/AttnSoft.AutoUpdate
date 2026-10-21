@@ -17,11 +17,11 @@ public class CheckUpdateMiddleware : ICheckUpdate
         List<VersionInfo>? verInfos;
         if (context.OnGetUpdateVersionInfo != null)
         {
-            verInfos =await context.OnGetUpdateVersionInfo.Invoke(context);
+            verInfos =await context.OnGetUpdateVersionInfo.Invoke(context).ConfigureAwait(false);
         }
         else
         {
-            verInfos = await UpdateContextExtensions.GetVersionInfoFromOss(context); 
+            verInfos = await UpdateContextExtensions.GetVersionInfoFromOss(context).ConfigureAwait(false); 
         }
         if (verInfos == null)
         {
@@ -31,18 +31,18 @@ public class CheckUpdateMiddleware : ICheckUpdate
         var updatVerInfo = UpdateApp.GetUpdateVersion(verInfos, context);
         if (updatVerInfo == null)
         {
-            Console.WriteLine("No update required!");
+            UpdateLog.Information("No update required!");
             return;
         }
         context.IsMainUpdate = true;
         context.UpdateVersion = updatVerInfo;
         if (context.OnFindNewVersion != null)
         {
-            await context.OnFindNewVersion(next, context);
+            await context.OnFindNewVersion(next, context).ConfigureAwait(false);
         }
         else
         {
-            await next(context);
+            await next(context).ConfigureAwait(false);
         }
     }
 }

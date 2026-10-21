@@ -25,7 +25,7 @@ public class HashCheckMiddleware : IHashCheck
                 return;
             } 
         }
-        await next(context);
+        await next(context).ConfigureAwait(false);
     }
 
     private bool VerifyFileHash(string path, string hash)

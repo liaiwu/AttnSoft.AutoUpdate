@@ -96,11 +96,11 @@ namespace AttnSoft.AutoUpdate
             {
                 if (predicate(context))
                 {
-                    await handler(context);
+                    await handler(context).ConfigureAwait(false);
                 }
                 else
                 {
-                    await next(context);
+                    await next(context).ConfigureAwait(false);
                 }
             });
         }
@@ -119,11 +119,11 @@ namespace AttnSoft.AutoUpdate
                 {
                     var branchBuilder = this.New();
                     configureAction(branchBuilder);
-                    await branchBuilder.Build().Invoke(context);
+                    await branchBuilder.Build().Invoke(context).ConfigureAwait(false);
                 }
                 else
                 {
-                    await next(context);
+                    await next(context).ConfigureAwait(false);
                 }
             });
         }

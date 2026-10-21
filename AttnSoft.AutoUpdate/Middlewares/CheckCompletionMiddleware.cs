@@ -17,7 +17,7 @@ public class CheckCompletionMiddleware : ICheckCompletion
         {
             context.OnUpdateCompleted.Invoke(context);
         }
-        await next(context);
+        await next(context).ConfigureAwait(false);
     }
     public static bool CheckIsCompletion()
     {

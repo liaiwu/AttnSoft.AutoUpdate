@@ -1,6 +1,5 @@
 ﻿using AttnSoft.AutoUpdate.Common;
 using GeneralUpdate.Common.FileBasic;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -20,11 +19,10 @@ public class DecompressMiddleware : IDecompress
         var patchPath = context.PatchPath = StorageManager.GetTempDirectory();
         if(File.Exists(sourcePath) == false)
         {
-            Console.WriteLine($"要解压的文件不存在:{sourcePath}");
             throw new FileNotFoundException("未找到下载的升级包文件!", sourcePath);
         }
         CompressionService.Decompress(sourcePath, patchPath);
-        Console.WriteLine($"[Decompress] Decompress completed, PatchPath={patchPath}");
-        await next(context);
+        UpdateLog.Information($"[Decompress] Decompress completed, PatchPath={patchPath}");
+        await next(context).ConfigureAwait(false);
     }
 }

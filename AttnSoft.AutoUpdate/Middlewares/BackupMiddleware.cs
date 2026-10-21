@@ -24,6 +24,6 @@ public class BackupMiddleware : IBackup
      
         StorageManager.Backup(context.AppPath, context.BackupPath, BlackListManager.Instance.SkipDirectorys);
 
-        await next(context);
+        await next(context).ConfigureAwait(false);
     }
 }
