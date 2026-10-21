@@ -15,7 +15,7 @@
 		<PackageReleaseNotes>https://github.com/liaiwu/AttnSoft.AutoUpdate/blob/main/docs/CHANGELOG.md</PackageReleaseNotes>
 		<PackageProjectUrl>https://github.com/liaiwu/AttnSoft.AutoUpdate</PackageProjectUrl>
 		<Title>AttnSoft.AutoUpdate</Title>
-		<PackageLicenseUrl>https://github.com/liaiwu/AttnSoft.AutoUpdate?tab=MIT-1-ov-file</PackageLicenseUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryType>public</RepositoryType>
 		<PackageTags>autoupdate,upgrade,update,attnsoft.autoupdate</PackageTags>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -48,10 +48,6 @@
 	  <None Remove="Upgrade\Framework\Upgrade.exe" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Content Include="AttnSoft.Update.ico" />
-	</ItemGroup>
-
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
 		<EmbeddedResource Include="Upgrade\Framework\Upgrade.exe" />
 	</ItemGroup>
@@ -59,10 +55,7 @@
 		<EmbeddedResource Include="Upgrade\AOT\Upgrade.exe" />
 	</ItemGroup>
 	<ItemGroup>
-	  <EmbeddedResource Include="AttnSoft.Update.png">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </EmbeddedResource>
+	  <EmbeddedResource Include="AttnSoft.Update.png" />
 	</ItemGroup>
 
 	<!--<ItemGroup Condition="$(RuntimeIdentifier.StartsWith('win')) and '$(TargetFrameworkIdentifier)' != '.NETFramework'">
