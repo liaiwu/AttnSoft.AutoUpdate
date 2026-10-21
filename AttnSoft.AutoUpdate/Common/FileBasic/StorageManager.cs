@@ -39,10 +39,24 @@ namespace GeneralUpdate.Common.FileBasic
             ComparisonResult = new ComparisonResult();
             var leftFileNodes = ReadFileNode(leftDir);
             var rightFileNodes = ReadFileNode(rightDir);
-            var leftTree = new FileTree(leftFileNodes);
-            var rightTree = new FileTree(rightFileNodes);
+
+            // 身份键用相对路径：BST 的形状取决于枚举顺序，按树的位置比对会在插入单个文件后大面积误判。
+            var leftNodeDic = new Dictionary<string, FileNode>(StringComparer.Ordinal);
+            foreach (var leftNode in leftFileNodes)
+            {
+                leftNodeDic[leftNode.RelativePath] = leftNode;
+            }
+
             var differentTreeNode = new List<FileNode>();
-            leftTree.Compare(leftTree.GetRoot(), rightTree.GetRoot(), ref differentTreeNode);
+            foreach (var rightNode in rightFileNodes)
+            {
+                if (!leftNodeDic.TryGetValue(rightNode.RelativePath, out var matchedNode)
+                    || !matchedNode.Equals(rightNode))
+                {
+                    differentTreeNode.Add(rightNode);
+                }
+            }
+
             ComparisonResult.AddToLeft(leftFileNodes);
             ComparisonResult.AddToRight(rightFileNodes);
             ComparisonResult.AddDifferent(differentTreeNode);

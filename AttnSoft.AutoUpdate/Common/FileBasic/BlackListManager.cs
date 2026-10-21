@@ -21,7 +21,8 @@ public class BlackListManager
 
     private static readonly List<string> _blackFiles =new List<string>();
 
-    private static readonly List<string> _skipDirectorys = ["app-", "fail"];
+    // upgrade_logs 是升级器自己的日志目录，不能被差分当成应用文件比较
+    private static readonly List<string> _skipDirectorys = ["app-", "fail", "upgrade_logs"];
 
     private BlackListManager() { }
 
