@@ -26,11 +26,14 @@ namespace WinAppClient
                 //context.UseWebApi();
                 //如果不指定使用WebApi方式,内部默认使用OSS方式
        
+                // 事件今后在线程池线程触发。ShowUpdateInfo 被调用时窗体还没 Show 过、句柄未创建，
+                // 此时 InvokeRequired 返回 false，守卫拦不住（实测照旧跑在线程池线程上），
+                // 所以用 UI 调度器把整个调用归位；窗体因此在 UI 线程上 Show，
+                // 后续 ChangProgress / DownloadComplet 里的 InvokeRequired 守卫才成立。
+                var uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
                 context.OnFindNewVersion = (next, context) =>
-                {
-                    fmUpdate.ShowUpdateInfo(next,context);
-                    return Task.CompletedTask;
-                };
+                    Task.Factory.StartNew(() => fmUpdate.ShowUpdateInfo(next, context),
+                        CancellationToken.None, TaskCreationOptions.None, uiScheduler);
                 context.OnUpdateException = (ex) =>
                 {
                     Console.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
