@@ -14,7 +14,7 @@ public class UpgradMiddleware : IUpgrad
     {
         try
         {
-            Console.WriteLine("[Upgrad] Start UpgradMiddleware");
+            UpdateLog.Debug("[Upgrad] Start UpgradMiddleware");
             var sourcePath = context.AppPath;
             var patchPath = context.PatchPath;
             var upgradeName = context.UpgradName;
@@ -47,16 +47,16 @@ public class UpgradMiddleware : IUpgrad
                 using (fsOpen)
                 using (var fsSave = new FileStream(filename, FileMode.Create))
                 {
-                    Console.WriteLine("[Upgrad] Writing Upgrade...");
-                    await fsOpen.CopyToAsync(fsSave);
+                    UpdateLog.Debug("[Upgrad] Writing Upgrade...");
+                    await fsOpen.CopyToAsync(fsSave).ConfigureAwait(false);
                 }
-                Console.WriteLine($"[Upgrad] Extracted Upgrade to {filename}");
+                UpdateLog.Information($"[Upgrad] Extracted Upgrade to {filename}");
             }
             else
             {
-                Console.WriteLine($"[Upgrad] Embedded resource not found ({resUpgradeName}), copying from patchPath: {patchPath}");
+                UpdateLog.Warning($"[Upgrad] Embedded resource not found ({resUpgradeName}), copying from patchPath: {patchPath}");
                 upgradeName = Path.GetFileNameWithoutExtension(upgradeName);
-                Console.WriteLine($"[Upgrad] Looking for upgrade files with base name: {upgradeName}");
+                UpdateLog.Debug($"[Upgrad] Looking for upgrade files with base name: {upgradeName}");
                 string[] upgradeFiles = new string[] {
                 upgradeName,
                 $"{upgradeName}.exe",
@@ -76,16 +76,16 @@ public class UpgradMiddleware : IUpgrad
                             File.Delete(oldUpgradeFile);
                         }
                         File.Move(newUpgradeFile, oldUpgradeFile);
-                        Console.WriteLine($"[Upgrad] Copied {upgradeFile} from patch to sourcePath");
+                        UpdateLog.Information($"[Upgrad] Copied {upgradeFile} from patch to sourcePath");
                     }
                 }
             }
-            Console.WriteLine("[Upgrad] Calling next middleware (StartUpgrad)");
-            await next(context);
+            UpdateLog.Debug("[Upgrad] Calling next middleware (StartUpgrad)");
+            await next(context).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Upgrad] Exception: {ex}");
+            UpdateLog.Error("[Upgrad] 升级自身 Upgrade.exe 失败", ex);
             throw;
         }
     }

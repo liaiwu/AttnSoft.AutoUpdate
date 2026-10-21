@@ -23,7 +23,7 @@ public class StartUpgradMiddleware : IStartUpgrad
     /// <param name="context"></param>
     public static void ExeUpdateAsync(UpdateContext context)
     {
-        Console.WriteLine("[StartUpgrad] === Start ExeUpdateAsync ===");
+        UpdateLog.Debug("[StartUpgrad] === Start ExeUpdateAsync ===");
         try
         {
             // 确保应用目录下没有已运行的升级器进程
@@ -32,7 +32,7 @@ public class StartUpgradMiddleware : IStartUpgrad
             const string ProcessInfoFileName = "newVersionInfo.json";
             var processInfoFilePath = Path.Combine(context.AppPath, ProcessInfoFileName);
             var appPath = Path.Combine(context.AppPath, context.UpgradName);
-            Console.WriteLine($"[StartUpgrad] Upgrade path: {appPath}");
+            UpdateLog.Debug($"[StartUpgrad] Upgrade path: {appPath}");
 
             if (File.Exists(processInfoFilePath))
             {
@@ -60,7 +60,7 @@ public class StartUpgradMiddleware : IStartUpgrad
             var ProcessInfo = DefaultJsonConvert.JsonConvert.Serialize(context.UpdateVersion, VersionInfoJsonContext.Default.VersionInfo);
 #endif
             File.WriteAllText(processInfoFilePath, ProcessInfo);
-            Console.WriteLine($"[StartUpgrad] Written {processInfoFilePath}");
+            UpdateLog.Debug($"[StartUpgrad] Written {processInfoFilePath}");
 
             var arguments = new Collection<string>
                 {
@@ -78,36 +78,28 @@ public class StartUpgradMiddleware : IStartUpgrad
                 CreateNoWindow = true
             };
             processStartInfo.Arguments = Utils.BuildArguments(arguments);
-            Console.WriteLine($"[StartUpgrad] Arguments: {processStartInfo.Arguments}");
-
-#if WINDOWS
-            processStartInfo.UseShellExecute = true;
-            processStartInfo.Verb = "runas"; // Windows 以管理员权限启动
-#if !DEBUG
-            processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-#endif
-#endif
+            UpdateLog.Debug($"[StartUpgrad] Arguments: {processStartInfo.Arguments}");
 
             try
             {
-                Console.WriteLine("[StartUpgrad] About to call Process.Start(...)");
+                UpdateLog.Debug("[StartUpgrad] About to call Process.Start(...)");
                 var process = Process.Start(processStartInfo);
                 if (process == null)
                     throw new InvalidOperationException($"Failed to start upgrade process: {appPath}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[StartUpgrad] Exception: {ex}");
+                UpdateLog.Error("[StartUpgrad] 启动 Upgrade 进程失败", ex);
                 context.OnUpdateException?.Invoke(ex);
                 return;
             }
 
-            Console.WriteLine("[StartUpgrad] Calling Environment.Exit(0)");
+            UpdateLog.Information("[StartUpgrad] 升级器已启动，即将结束当前进程");
             Environment.Exit(0);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[StartUpgrad] Exception: {ex}");
+            UpdateLog.Error("[StartUpgrad] 准备启动升级器时失败", ex);
             context.OnUpdateException?.Invoke(ex);
         }
     }
@@ -118,13 +110,13 @@ public class StartUpgradMiddleware : IStartUpgrad
         {
             if (context.OnBeforeInstall != null)
             {
-                Console.WriteLine("[StartUpgrad] Calling OnBeforeInstall callback");
+                UpdateLog.Debug("[StartUpgrad] Calling OnBeforeInstall callback");
                 context.OnBeforeInstall.Invoke(context);
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[StartUpgrad] OnBeforeInstall exception: {ex}");
+            UpdateLog.Error("[StartUpgrad] 消费者的 OnBeforeInstall 回调抛出异常，升级中止", ex);
             context.OnUpdateException?.Invoke(ex);
             return;
         }
